@@ -25,13 +25,13 @@ const FooterElement = styled.div`
 const Title = styled.div`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.uniswapPink};
+  color: ${({ theme }) => theme.footerLink};
 
   :hover {
     cursor: pointer;
   }
   #link {
-    text-decoration-color: ${({ theme }) => theme.uniswapPink};
+    text-decoration-color: ${({ theme }) => theme.footerLink};
   }
 
   #title {
@@ -39,9 +39,9 @@ const Title = styled.div`
     font-size: 0.825rem;
     margin-right: 12px;
     font-weight: 400;
-    color: ${({ theme }) => theme.uniswapPink};
+    color: ${({ theme }) => theme.footerLink};
     :hover {
-      color: ${({ theme }) => darken(0.2, theme.uniswapPink)};
+      color: ${({ theme }) => darken(0.2, theme.footerLink)};
     }
   }
 `
@@ -78,13 +78,13 @@ export default function Footer() {
     <FooterFrame>
       <FooterElement>
         <Title>
-          <Link id="link" href="https://uniswap.io/">
+          <Link id="link" href="#">
             <h1 id="title">About</h1>
           </Link>
-          <Link id="link" href="https://docs.uniswap.io/">
+          <Link id="link" href="#">
             <h1 id="title">Docs</h1>
           </Link>
-          <Link id="link" href="https://github.com/Uniswap">
+          <Link id="link" href="#">
             <h1 id="title">Code</h1>
           </Link>
         </Title>

@@ -47,7 +47,7 @@ const theme = darkMode => ({
   greyText: darkMode ? white : '#6C7284',
 
   // for setting css on <html>
-  backgroundColor: darkMode ? '#333639' : white,
+  backgroundColor: darkMode ? '#333333' : white,
 
   modalBackground: darkMode ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.5)',
   inputBackground: darkMode ? '#202124' : white,
@@ -72,6 +72,7 @@ const theme = darkMode => ({
   malibuBlue: darkMode ? '#E67AEF' : '#5CA2FF',
   royalBlue: darkMode ? '#DC6BE5' : '#2F80ED',
   loadingBlue: darkMode ? '#e4f0ff' : '#e4f0ff',
+  makerBlue: darkMode ? '#08529b' : '#08529b',
 
   // purples
   wisteriaPurple: '#DC6BE5',
@@ -79,10 +80,13 @@ const theme = darkMode => ({
   salmonRed: '#FF6871',
   // orange
   pizazzOrange: '#FF8F05',
+  makerOrange: '#f5b13d',
   // yellows
   warningYellow: '#FFE270',
   // pink
   uniswapPink: '#DC6BE5',
+  // teal
+  makerTeal: '#1aaa9b',
   //green
   connectedGreen: '#27AE60',
 
@@ -91,6 +95,7 @@ const theme = darkMode => ({
 
   //specific
   textHover: darkMode ? theme.uniswapPink : theme.doveGray,
+  footerLink: darkMode ? white : '#1aaa9b',
 
   // connect button when loggedout
   buttonFaded: darkMode ? '#DC6BE5' : '#737373',
@@ -110,9 +115,9 @@ const theme = darkMode => ({
 
 export const GlobalStyle = createGlobalStyle`
   @import url('https://rsms.me/inter/inter.css');
-  html { font-family: 'Inter', sans-serif; }
+  html { font-family: system-ui, 'Helvetica Neue', sans-serif; }
   @supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
+    html { font-family: system-ui, 'Helvetica Neue', sans-serif; }
   }
   
   html,

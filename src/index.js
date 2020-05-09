@@ -25,7 +25,7 @@ function getLibrary(provider) {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  ReactGA.initialize('UA-128182339-1')
+  ReactGA.initialize('')
   ReactGA.set({
     customBrowserType: !isMobile ? 'desktop' : window.web3 || window.ethereum ? 'mobileWeb3' : 'mobileRegular'
   })
