@@ -15,7 +15,7 @@ const StyledDialogOverlay = styled(WrappedDialogOverlay).attrs({
   suppressClassNameWarning: true
 })`
   &[data-reach-dialog-overlay] {
-    z-index: 2;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;

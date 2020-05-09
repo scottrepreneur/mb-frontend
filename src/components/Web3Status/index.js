@@ -62,25 +62,25 @@ const Web3StatusConnect = styled(Web3StatusGeneric)`
     faded &&
     css`
       background-color: transparent;
-      border: 1px solid ${({ theme }) => theme.royalBlue};
-      color: ${({ theme }) => theme.royalBlue};
+      border: 1px solid ${({ theme }) => theme.white};
+      color: ${({ theme }) => theme.white};
 
       :hover,
       :focus {
-        border: 1px solid ${({ theme }) => darken(0.1, theme.royalBlue)};
-        color: ${({ theme }) => darken(0.1, theme.royalBlue)};
+        border: 1px solid ${({ theme }) => darken(0.1, theme.white)};
+        color: ${({ theme }) => darken(0.1, theme.white)};
       }
     `}
 `
 
 const Web3StatusConnected = styled(Web3StatusGeneric)`
-  background-color: ${({ pending, theme }) => (pending ? theme.zumthorBlue : theme.inputBackground)};
-  border: 1px solid ${({ pending, theme }) => (pending ? theme.royalBlue : theme.mercuryGray)};
-  color: ${({ pending, theme }) => (pending ? theme.royalBlue : theme.doveGray)};
+  background-color: ${({ pending, theme }) => (pending ? theme.zumthorBlue : theme.makerTeal)};
+  border: 1px solid ${({ pending, theme }) => (pending ? theme.royalBlue : theme.white)};
+  color: ${({ pending, theme }) => (pending ? theme.royalBlue : theme.white)};
   font-weight: 400;
   :hover {
     background-color: ${({ pending, theme }) =>
-      pending ? transparentize(0.9, theme.royalBlue) : darken(0.05, theme.inputBackground)};
+      pending ? transparentize(0.9, theme.royalBlue) : darken(0.05, theme.makerTeal)};
 
     :focus {
       border: 1px solid
