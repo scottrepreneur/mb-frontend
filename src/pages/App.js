@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from 'react'
 import styled from 'styled-components'
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
 
 import Web3ReactManager from '../components/Web3ReactManager'
 import Header from '../components/Header'
@@ -50,7 +50,7 @@ export default function App() {
     <>
       <Suspense fallback={null}>
         <AppWrapper>
-          <BrowserRouter>
+          <HashRouter>
             <HeaderWrapper>
               <Header />
             </HeaderWrapper>
@@ -72,7 +72,7 @@ export default function App() {
           <FooterWrapper>
             <Footer />
           </FooterWrapper>
-          </BrowserRouter>
+          </HashRouter>
         </AppWrapper>
       </Suspense>
     </>
