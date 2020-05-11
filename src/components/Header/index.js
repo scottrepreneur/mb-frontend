@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { withRouter, NavLink } from 'react-router-dom'
 
-import { Link } from '../../theme'
 import Web3Status from '../Web3Status'
 import { darken } from 'polished'
 
@@ -84,12 +83,18 @@ const StyledNavLink = styled(NavLink).attrs({
   text-decoration: none;
 
   :hover {
+    text-decoration: underline;
+    text-decoration-color: ${({ theme }) => theme.white};
+  }
+
+  &.${activeClassName} {
+    text-decoration: underline;
     text-decoration-color: ${({ theme }) => theme.white};
   }
 `
 
 
-export default function Header() {
+function Header({ location: { pathname } }) {
   return (
     <HeaderFrame>
       <HeaderElement>
@@ -114,3 +119,5 @@ export default function Header() {
     </HeaderFrame>
   )
 }
+
+export default withRouter(Header);

@@ -10,7 +10,6 @@ import BadgeModal from '../BadgeModal'
 const Heading = styled.div`
   h1 {
     margin-top: 30px;
-    font-size: 20px;
     text-align: center;
   }
 `

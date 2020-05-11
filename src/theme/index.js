@@ -66,6 +66,7 @@ const theme = darkMode => ({
   buttonOutlineGrey: darkMode ? '#FAFAFA' : '#F2F2F2',
   tokenRowHover: darkMode ? '#404040' : '#F2F2F2',
   badgeShadow: darkMode ? '#404040' : '#F2F2F2',
+  inactiveButton: darkMode ? '#E1E1E1' : '#AEAEAE',
 
   //blacks
   charcoalBlack: darkMode ? '#F2F2F2' : '#404040',

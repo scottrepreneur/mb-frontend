@@ -9,6 +9,7 @@ import Footer from '../components/Footer'
 import { getAllQueryParams } from '../utils'
 
 const Redeem = lazy(() => import('./Redeem'))
+const Admin = lazy(() => import('./Admin'))
 
 const AppWrapper = styled.div`
   display: flex;
@@ -61,7 +62,8 @@ export default function App() {
                   {/* this Suspense is for route code-splitting */}
                   <Suspense fallback={null}>
                     <Switch>
-                      <Route exact strict path="/redeem" component={() => <Redeem params={params} />} />              
+                      <Route exact strict path="/redeem" component={() => <Redeem params={params} />} /> 
+                      <Route exact strict path="/admin" component={() => <Admin params={params} />} />              
                       <Redirect to="/redeem" />
                     </Switch>
                   </Suspense>

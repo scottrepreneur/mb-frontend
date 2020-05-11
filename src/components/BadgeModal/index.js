@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { lighten } from 'polished'
 
 import Modal from '../Modal'
 
@@ -14,10 +13,17 @@ const Wrapper = styled.div`
   position: relative;
 `
 
-const Closer = styled.div`
+const Closer = styled.img`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
+  height: 15px;
+  width: 15px;
+  color: ${({ theme }) => theme.buttonOutlineGrey};
+
+  :hover {
+    cursor: pointer;
+  }
 `
 
 const Name = styled.div`
@@ -29,7 +35,7 @@ const Name = styled.div`
   overflow-wrap: balance;
 `
 
-const Image = styled.div`
+const Badge = styled.div`
   margin-top: 20px;
 `
 
@@ -64,7 +70,7 @@ const Resource = styled.a`
   }
 `
 
-const Redeemed = styled.div`
+const Status = styled.div`
   color: ${({ theme }) => theme.makerTeal};
 `
 
@@ -95,20 +101,41 @@ export default function BadgeModal({ badge, isOpen, onDismiss }) {
     >
       {badge &&
         <Wrapper>
-          <Closer>X</Closer>
+          <Closer 
+            src={require('../../assets/images/x.svg')} 
+            alt="close modal" 
+            onClick={() => {
+              onDismiss()
+            }} 
+          />
           <Name dangerouslySetInnerHTML={{ __html: badge.longName }} />
-          <Image> 
-            <img src={require('../../assets/images/' + badge.imgPath)} alt={badge.name} />
-          </Image>
+          <Badge> 
+            <img 
+              src={require('../../assets/images/' + badge.imgPath)} 
+              alt={badge.name} 
+            />
+          </Badge>
           <Stage />
           <Description>
             {badge.description}
           </Description>
           <Footer>
-            { badge.unlocked && badge.redeemed ? <Redeemed>Redeemed!</Redeemed> : null }
-            { !badge.unlocked && <Redeemed>Progress: 0%</Redeemed> }
-            <Resource href={badge.resource}> {badge.resource} {'→'} </Resource>
-            { badge.unlocked && !badge.redeemed ? <Redeem>Redeem</Redeem> : null }
+            { badge.unlocked && badge.redeemed 
+              ? <Status>Redeemed!</Status> 
+              : null 
+            }
+            { !badge.unlocked && <Status>Progress: 0%</Status> }
+            <Resource 
+              href={badge.resource} 
+              target="_blank" 
+              rel="noopener noreferrer"
+            > 
+              {badge.resource} {'→'} 
+            </Resource>
+            { badge.unlocked && !badge.redeemed 
+              ? <Redeem>Redeem</Redeem> 
+              : null 
+            }
           </Footer>
         </Wrapper>
       }
