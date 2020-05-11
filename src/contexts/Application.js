@@ -2,13 +2,16 @@ import React, { createContext, useContext, useReducer, useMemo, useCallback, use
 
 import { useWeb3React } from '../hooks'
 import { safeAccess } from '../utils'
+import { fetchBadgeList } from '../badges'
 
 const BLOCK_NUMBER = 'BLOCK_NUMBER'
 const USD_PRICE = 'USD_PRICE'
 const WALLET_MODAL_OPEN = 'WALLET_MODAL_OPEN'
+const BADGE_LIST = 'BADGE_LIST'
 
 const UPDATE_BLOCK_NUMBER = 'UPDATE_BLOCK_NUMBER'
 const TOGGLE_WALLET_MODAL = 'TOGGLE_WALLET_MODAL'
+const UPDATE_BADGE_LIST = 'UPDATE_BADGE_LIST'
 
 const ApplicationContext = createContext()
 
@@ -32,6 +35,13 @@ function reducer(state, { type, payload }) {
     case TOGGLE_WALLET_MODAL: {
       return { ...state, [WALLET_MODAL_OPEN]: !state[WALLET_MODAL_OPEN] }
     }
+    case UPDATE_BADGE_LIST: {
+      const { badgeList } = payload
+      return {
+        ...state,
+        [BADGE_LIST]: badgeList,
+      }
+    }
     default: {
       throw Error(`Unexpected action type in ApplicationContext reducer: '${type}'.`)
     }
@@ -42,7 +52,8 @@ export default function Provider({ children }) {
   const [state, dispatch] = useReducer(reducer, {
     [BLOCK_NUMBER]: {},
     [USD_PRICE]: {},
-    [WALLET_MODAL_OPEN]: false
+    [WALLET_MODAL_OPEN]: false,
+    [BADGE_LIST]: [],
   })
 
   const updateBlockNumber = useCallback((networkId, blockNumber) => {
@@ -53,12 +64,17 @@ export default function Provider({ children }) {
     dispatch({ type: TOGGLE_WALLET_MODAL })
   }, [])
 
+  const updateBadgeList = useCallback((badgeList) => {
+    dispatch({ type: UPDATE_BADGE_LIST, payload: { badgeList } })
+  }, [])
+
   return (
     <ApplicationContext.Provider
-      value={useMemo(() => [state, { updateBlockNumber, toggleWalletModal }], [
+      value={useMemo(() => [state, { updateBlockNumber, toggleWalletModal, updateBadgeList }], [
         state,
         updateBlockNumber,
-        toggleWalletModal
+        toggleWalletModal,
+        updateBadgeList
       ])}
     >
       {children}
@@ -67,9 +83,9 @@ export default function Provider({ children }) {
 }
 
 export function Updater() {
-  const { library, chainId } = useWeb3React()
+  const { library, chainId, account } = useWeb3React()
 
-  const [, { updateBlockNumber }] = useApplicationContext()
+  const [, { updateBlockNumber, updateBadgeList }] = useApplicationContext()
 
   // update block number
   useEffect(() => {
@@ -101,6 +117,15 @@ export function Updater() {
     }
   }, [chainId, library, updateBlockNumber])
 
+  useEffect(() => {
+    fetchBadgeList(account).then((data) => {
+      if (data) {
+        updateBadgeList(data)
+      }
+    })
+  }, [account, updateBadgeList])
+
+
   return null
 }
 
@@ -122,4 +147,10 @@ export function useWalletModalToggle() {
   const [, { toggleWalletModal }] = useApplicationContext()
 
   return toggleWalletModal
+}
+
+export function useBadgeList() {
+  const [state] = useApplicationContext()
+
+  return state?.[BADGE_LIST]
 }

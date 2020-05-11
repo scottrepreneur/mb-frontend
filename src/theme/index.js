@@ -3,6 +3,7 @@ import { ThemeProvider as StyledComponentsThemeProvider, createGlobalStyle, css 
 import { getQueryParam, checkSupportedTheme } from '../utils'
 import { SUPPORTED_THEMES } from '../constants'
 import { useDarkModeManager } from '../contexts/LocalStorage'
+import { lighten } from 'polished'
 
 export * from './components'
 
@@ -43,14 +44,14 @@ export default function ThemeProvider({ children }) {
 const theme = darkMode => ({
   white,
   black,
-  textColor: darkMode ? white : '#010101',
+  textColor: darkMode ? white : '#53546a',
   greyText: darkMode ? white : '#6C7284',
 
   // for setting css on <html>
   backgroundColor: darkMode ? '#333333' : white,
 
-  modalBackground: darkMode ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.5)',
-  inputBackground: darkMode ? '#202124' : white,
+  modalBackground: darkMode ? lighten(0.1, '#333333') : 'rgba(0,0,0,0.5)',
+  inputBackground: darkMode ? lighten(0.1, '#333333') : white,
   placeholderGray: darkMode ? '#5F5F5F' : '#E1E1E1',
   shadowColor: darkMode ? '#000' : '#2F80ED',
 
@@ -64,6 +65,7 @@ const theme = darkMode => ({
   activeGray: darkMode ? '#292C2F' : '#F7F8FA',
   buttonOutlineGrey: darkMode ? '#FAFAFA' : '#F2F2F2',
   tokenRowHover: darkMode ? '#404040' : '#F2F2F2',
+  badgeShadow: darkMode ? '#404040' : '#F2F2F2',
 
   //blacks
   charcoalBlack: darkMode ? '#F2F2F2' : '#404040',
