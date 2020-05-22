@@ -24,7 +24,7 @@ export const injected = new InjectedConnector({
 
 // mainnet only
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: NETWORK_URL },
+  rpc: { 42: NETWORK_URL },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: false,
   pollingInterval: POLLING_INTERVAL
@@ -33,17 +33,17 @@ export const walletconnect = new WalletConnectConnector({
 // mainnet only
 export const fortmatic = new FortmaticConnector({
   apiKey: process.env.REACT_APP_FORTMATIC_KEY,
-  chainId: 1
+  chainId: 42
 })
 
 // mainnet only
 export const portis = new PortisConnector({
   dAppId: process.env.REACT_APP_PORTIS_ID,
-  networks: [1]
+  networks: [42]
 })
 
 export const torus = new TorusConnector({
-  chainId: 1,
+  chainId: 42,
   initOptions: {
     showTorusButton: false
   }

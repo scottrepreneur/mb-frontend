@@ -1,10 +1,13 @@
-import { injected, walletconnect, walletlink, fortmatic, portis, torus } from '../connectors'
+import { injected, walletconnect, walletlink, fortmatic, portis } from '../connectors'
 
 export const FACTORY_ADDRESSES = {
   1: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
-  3: '0x9c83dCE8CA20E9aAF9D3efc003b2ea62aBC08351',
-  4: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
-  42: '0xD3E51Ef092B2845f10401a0159B2B96e8B6c3D30'
+  42: '0x276C2c2CF6F751D62C79c6C1693666D87B015B17'
+}
+
+export const INSIGNIA_ADDRESSES = {
+  1: '',
+  42: '0x7Cf0ef375998470D75044B10Cf2f6a5F8af34a20'
 }
 
 export const SUPPORTED_THEMES = {
@@ -90,15 +93,15 @@ export const SUPPORTED_WALLETS =
             color: '#4A6C9B',
             mobile: true
           },
-          Torus: {
-            connector: torus,
-            name: 'Torus',
-            iconName: 'torus.png',
-            description: 'Login via Google, Facebook and others',
-            href: null,
-            color: '#5495F7',
-            mobile: true
-          }
+          // Torus: {
+          //   connector: torus,
+          //   name: 'Torus',
+          //   iconName: 'torus.png',
+          //   description: 'Login via Google, Facebook and others',
+          //   href: null,
+          //   color: '#5495F7',
+          //   mobile: true
+          // }
         }
       }
 

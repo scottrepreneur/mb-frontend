@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 
-import FACTORY_ABI from '../constants/abis/factory'
 import EXCHANGE_ABI from '../constants/abis/exchange'
 import ERC20_ABI from '../constants/abis/erc20'
 import ERC20_BYTES32_ABI from '../constants/abis/erc20_bytes32'
-import { FACTORY_ADDRESSES, SUPPORTED_THEMES } from '../constants'
+import BADGE_FACTORY_ABI from '../constants/abis/badgeFactory'
+import INSIGNIA_DAO_ABI from '../constants/abis/insigniaDao'
+import { FACTORY_ADDRESSES, INSIGNIA_ADDRESSES, SUPPORTED_THEMES } from '../constants'
 import { formatFixed } from '@uniswap/sdk'
 
 import UncheckedJsonRpcSigner from './signer'
@@ -165,6 +166,7 @@ export function getProviderOrSigner(library, account) {
 
 // account is optional
 export function getContract(address, ABI, library, account) {
+  // console.log(!isAddress((address)));
   if (!isAddress(address) || address === ethers.constants.AddressZero) {
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
@@ -174,12 +176,18 @@ export function getContract(address, ABI, library, account) {
 
 // account is optional
 export function getFactoryContract(networkId, library, account) {
-  return getContract(FACTORY_ADDRESSES[networkId], FACTORY_ABI, library, account)
+  return getContract(FACTORY_ADDRESSES[networkId], BADGE_FACTORY_ABI, library, account)
 }
 
 // account is optional
 export function getExchangeContract(exchangeAddress, library, account) {
   return getContract(exchangeAddress, EXCHANGE_ABI, library, account)
+}
+
+// account is optional
+export function getInsigniaContract(networkId, library, account) {
+  // console.log(INSIGNIA_ADDRESSES[networkId]);
+  return getContract(INSIGNIA_ADDRESSES[networkId], INSIGNIA_DAO_ABI, library, account)
 }
 
 // get token name

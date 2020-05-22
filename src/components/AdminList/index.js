@@ -2,7 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { lighten } from 'polished'
 
-import { useBadgeList } from '../../contexts/Application'
+import { useBadgeList, useRootHashes } from '../../contexts/Application'
+
+import { useInsigniaContract } from '../../hooks'
 
 const Wrapper = styled.div``
 
@@ -11,6 +13,9 @@ const Heading = styled.div`
     margin-top: 30px;
     text-align: center;
   }
+`
+
+const RootHashes = styled.button`
 `
 
 const Image = styled.div`
@@ -105,20 +110,36 @@ const Break = styled.hr`
   border-top: 1px solid ${({ theme }) => theme.buttonOutlineGrey};
 `
 
+const Root = styled.input`
+  height: 30px;
+  width: 300px;
+`
+
 
 export default function AdminList() {
   const badgeList = useBadgeList()
+
+  const rootHashes = useRootHashes();
+  // console.log(rootHashes);
+
+  const contract = useInsigniaContract();
+
+  async function onSetRootHashes() {
+    let result = await contract.functions.setRootHashes(rootHashes);
+    console.log(result);
+  }
   
   return (
     <Wrapper>
       <Heading>
           <h1>Admin</h1>
+          <RootHashes onClick={() => onSetRootHashes()}>Set Roots</RootHashes>
       </Heading>
       {Object.keys(badgeList).map(key => {
         const badge = badgeList[key]
         return(
           <>
-            <Badge key={badge.name}>
+            <Badge key={badge.id}>
               <Image>
                 <img
                   src={require('../../assets/images/' + badge.imgPath)} 
@@ -135,6 +156,7 @@ export default function AdminList() {
               <AddButton toAdd={true}>
                 <div>+ Add Redeemers</div>
               </AddButton>
+              <Root type="text" defaultValue={rootHashes[badge.id - 1]} />
             </Badge>
             <Break />
           </>

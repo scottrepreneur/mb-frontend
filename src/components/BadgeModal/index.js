@@ -89,7 +89,7 @@ const Redeem = styled.button`
   }
 `
 
-export default function BadgeModal({ badge, isOpen, onDismiss }) {
+export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem }) {
 
   return (
     <Modal
@@ -133,7 +133,7 @@ export default function BadgeModal({ badge, isOpen, onDismiss }) {
               {badge.resource} {'→'} 
             </Resource>
             { badge.unlocked && !badge.redeemed 
-              ? <Redeem>Redeem</Redeem> 
+              ? <Redeem onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</Redeem> 
               : null 
             }
           </Footer>

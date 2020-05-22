@@ -7,6 +7,8 @@ import { useBadgeList } from '../../contexts/Application'
 import Spinner from '../Spinner'
 import BadgeModal from '../BadgeModal'
 
+import { useFactoryContract } from '../../hooks'
+
 const Heading = styled.div`
   h1 {
     margin-top: 30px;
@@ -86,10 +88,18 @@ const Loading = styled.div`
 export default function BadgeList({ initialCurrency, sending = false, params }) {
   const badgeList = useBadgeList()
 
+  const contract = useFactoryContract()
+
   const [openBadge, setOpenBadge] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
-  console.log(badgeList)
+  // console.log(badgeList)
+
+  async function onRedeem(proof, templateId) {
+
+    let result = await contract.functions.activateBadge(proof, templateId, "token.json");
+    console.log(result);
+  }
 
   return (
     <>
@@ -98,6 +108,7 @@ export default function BadgeList({ initialCurrency, sending = false, params }) 
         <BadgeModal 
           badge={openBadge}
           isOpen={showModal}
+          onRedeem={onRedeem}
           onDismiss={() => {
             setShowModal(false)
           }}
@@ -110,14 +121,14 @@ export default function BadgeList({ initialCurrency, sending = false, params }) 
             const badge = badgeList[key]
             return(
               <Wrapper 
-                key={badge.imgPath}
+                key={badge.id}
               >
                 {badge.unlocked && !badge.redeemed 
                   ? <RedeemButton>Redeem</RedeemButton>
                   : null
                 }
                 <Badge
-                  key={badge.name}
+                  key={badge.id}
                   onClick={() => {
                     setOpenBadge(badge)
                     setShowModal(true)

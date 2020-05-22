@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect'
 
 import { NetworkContextName } from '../constants'
 import ERC20_ABI from '../constants/abis/erc20'
-import { getContract, getFactoryContract, getExchangeContract, isAddress } from '../utils'
+import { getContract, getFactoryContract, getExchangeContract, getInsigniaContract, isAddress } from '../utils'
 import { injected } from '../connectors'
 
 export function useWeb3React() {
@@ -222,6 +222,18 @@ export function useExchangeContract(exchangeAddress, withSignerIfPossible = true
       return null
     }
   }, [exchangeAddress, library, withSignerIfPossible, account])
+}
+
+export function useInsigniaContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    try {
+      return getInsigniaContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
 }
 
 export function useCopyClipboard(timeout = 500) {

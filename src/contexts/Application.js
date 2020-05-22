@@ -1,17 +1,19 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback, useEffect } from 'react'
 
 import { useWeb3React } from '../hooks'
-import { safeAccess } from '../utils'
+import { safeAccess, getInsigniaContract, getFactoryContract } from '../utils'
 import { fetchBadgeList } from '../badges'
 
 const BLOCK_NUMBER = 'BLOCK_NUMBER'
 const USD_PRICE = 'USD_PRICE'
 const WALLET_MODAL_OPEN = 'WALLET_MODAL_OPEN'
 const BADGE_LIST = 'BADGE_LIST'
+const ROOT_HASHES = 'ROOT_HASHES'
 
 const UPDATE_BLOCK_NUMBER = 'UPDATE_BLOCK_NUMBER'
 const TOGGLE_WALLET_MODAL = 'TOGGLE_WALLET_MODAL'
 const UPDATE_BADGE_LIST = 'UPDATE_BADGE_LIST'
+const UPDATE_ROOT_HASHES = 'UPDATE_ROOT_HASHES'
 
 const ApplicationContext = createContext()
 
@@ -42,6 +44,13 @@ function reducer(state, { type, payload }) {
         [BADGE_LIST]: badgeList,
       }
     }
+    case UPDATE_ROOT_HASHES: {
+      const { rootHashes } = payload
+      return {
+        ...state,
+        [ROOT_HASHES]: rootHashes
+      }
+    }
     default: {
       throw Error(`Unexpected action type in ApplicationContext reducer: '${type}'.`)
     }
@@ -54,6 +63,7 @@ export default function Provider({ children }) {
     [USD_PRICE]: {},
     [WALLET_MODAL_OPEN]: false,
     [BADGE_LIST]: [],
+    [ROOT_HASHES]: [],
   })
 
   const updateBlockNumber = useCallback((networkId, blockNumber) => {
@@ -68,13 +78,18 @@ export default function Provider({ children }) {
     dispatch({ type: UPDATE_BADGE_LIST, payload: { badgeList } })
   }, [])
 
+  const updateRootHashes = useCallback((rootHashes) => {
+    dispatch({ type: UPDATE_ROOT_HASHES, payload: { rootHashes } })
+  }, [])
+
   return (
     <ApplicationContext.Provider
-      value={useMemo(() => [state, { updateBlockNumber, toggleWalletModal, updateBadgeList }], [
+      value={useMemo(() => [state, { updateBlockNumber, toggleWalletModal, updateBadgeList, updateRootHashes }], [
         state,
         updateBlockNumber,
         toggleWalletModal,
-        updateBadgeList
+        updateBadgeList,
+        updateRootHashes,
       ])}
     >
       {children}
@@ -85,7 +100,7 @@ export default function Provider({ children }) {
 export function Updater() {
   const { library, chainId, account } = useWeb3React()
 
-  const [, { updateBlockNumber, updateBadgeList }] = useApplicationContext()
+  const [, { updateBlockNumber, updateBadgeList, updateRootHashes }] = useApplicationContext()
 
   // update block number
   useEffect(() => {
@@ -119,11 +134,45 @@ export function Updater() {
 
   useEffect(() => {
     fetchBadgeList(account).then((data) => {
+      // console.log(data)
       if (data) {
-        updateBadgeList(data)
+        // console.log(data)
+        updateBadgeList(data);
       }
     })
   }, [account, updateBadgeList])
+
+  useEffect(() => {
+    async function getHashes() {
+      if (chainId) {
+        const insignia = getInsigniaContract(chainId, library, account)
+        const factory = getFactoryContract(chainId, library, account)
+        const templatesCount = await factory.getTemplatesCount();
+        // console.log(templatesCount.toString('utf-8'));
+        let hashes = [];
+        for (let i = 0; i < templatesCount; i++) {
+          // console.log(i)
+          let thing;
+          try {
+             thing = await insignia.roots(i);
+          }
+          catch(error) {
+            // console.log(error);
+            thing = '0x0000000000000000000000000000000000000000000000000000000000000000'
+          }
+          // console.log(thing)
+          hashes.push(thing)
+        }
+        // console.log(hashes);
+
+        if (hashes) {
+          updateRootHashes(hashes);
+        }
+      }
+    }
+    getHashes();
+    
+  }, [account, library, chainId, updateRootHashes])
 
 
   return null
@@ -153,4 +202,10 @@ export function useBadgeList() {
   const [state] = useApplicationContext()
 
   return state?.[BADGE_LIST]
+}
+
+export function useRootHashes() {
+  const [state] = useApplicationContext()
+
+  return state?.[ROOT_HASHES]
 }
