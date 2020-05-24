@@ -38,7 +38,7 @@ const MAINNET_WALLETS = {
 }
 
 export const SUPPORTED_WALLETS =
-  process.env.REACT_APP_CHAIN_ID !== '1'
+  process.env.REACT_APP_CHAIN_ID !== '42'
     ? MAINNET_WALLETS
     : {
         ...MAINNET_WALLETS,
