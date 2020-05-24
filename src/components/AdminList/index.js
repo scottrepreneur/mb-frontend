@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { lighten } from 'polished'
 
 import { useBadgeList, useRootHashes } from '../../contexts/Application'
-
-import { useInsigniaContract } from '../../hooks'
+import { useInsigniaContract, useFactoryContract } from '../../hooks'
+import TemplateModal from '../TemplateModal'
 
 const Wrapper = styled.div``
 
@@ -122,15 +122,37 @@ export default function AdminList() {
   const rootHashes = useRootHashes();
   // console.log(rootHashes);
 
-  const contract = useInsigniaContract();
+  const [showModal, setShowModal] = useState(false)
+
+  const insignia = useInsigniaContract();
+  const badgeFactory = useFactoryContract();
 
   async function onSetRootHashes() {
-    let result = await contract.functions.setRootHashes(rootHashes);
+    let result = await insignia.setRootHashes(rootHashes);
     console.log(result);
   }
-  
+
+  async function onCreateTemplate(template) {
+    console.log(template)
+    let result = await badgeFactory.createTemplate(
+      template.name,
+      template.description,
+      template.imgUrl
+    )
+    
+    console.log(result);
+    return result;
+  }
+
   return (
     <Wrapper>
+      <TemplateModal
+        isOpen={showModal}
+        onCreateTemplate={(template) => onCreateTemplate(template)}
+        onDismiss={() => {
+          setShowModal(false)
+        }} 
+      />
       <Heading>
           <h1>Admin</h1>
           <RootHashes onClick={() => onSetRootHashes()}>Set Roots</RootHashes>
@@ -150,7 +172,7 @@ export default function AdminList() {
               <Name>
                 {badge.name}
               </Name>
-              <CreateButton created={false}>
+              <CreateButton created={false} onClick={() => setShowModal(true)}>
                 <div>Create Badge</div>
               </CreateButton>
               <AddButton toAdd={true}>

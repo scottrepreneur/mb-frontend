@@ -78,14 +78,14 @@ export default function Footer() {
     <FooterFrame>
       <FooterElement>
         <Title>
-          <Link id="link" href="#">
-            <h1 id="title">About</h1>
+          <Link id="link" href="https://github.com/naszam/insigniadao">
+            <h1 id="title">Contracts</h1>
           </Link>
           <Link id="link" href="#">
-            <h1 id="title">Docs</h1>
+            <h1 id="title">Frontend</h1>
           </Link>
           <Link id="link" href="#">
-            <h1 id="title">Code</h1>
+            <h1 id="title">Merkle Service</h1>
           </Link>
         </Title>
       </FooterElement>
