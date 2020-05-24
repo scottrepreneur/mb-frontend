@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { lighten } from 'polished'
 
 import { useBadgeList, useRootHashes } from '../../contexts/Application'
-import { useInsigniaContract, useFactoryContract } from '../../hooks'
+import { useInsigniaContract, useFactoryContract, useGsnFactoryContract } from '../../hooks'
 import TemplateModal from '../TemplateModal'
 
 const Wrapper = styled.div``
@@ -126,6 +126,7 @@ export default function AdminList() {
 
   const insignia = useInsigniaContract();
   const badgeFactory = useFactoryContract();
+  const gsnBadgeFactory = useGsnFactoryContract();
 
   async function onSetRootHashes() {
     let result = await insignia.setRootHashes(rootHashes);

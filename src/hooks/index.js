@@ -5,7 +5,7 @@ import { isMobile } from 'react-device-detect'
 
 import { NetworkContextName } from '../constants'
 import ERC20_ABI from '../constants/abis/erc20'
-import { getContract, getFactoryContract, getExchangeContract, getInsigniaContract, isAddress } from '../utils'
+import { getContract, getFactoryContract, getGsnFactoryContract, getExchangeContract, getInsigniaContract, isAddress } from '../utils'
 import { injected } from '../connectors'
 
 export function useWeb3React() {
@@ -204,8 +204,23 @@ export function useFactoryContract(withSignerIfPossible = true) {
   const { chainId, library, account } = useWeb3React()
 
   return useMemo(() => {
+    console.log(account)
     try {
+
       return getFactoryContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
+}
+
+export function useGsnFactoryContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    console.log(account)
+    try {
+      return getGsnFactoryContract(chainId, library, withSignerIfPossible ? account : undefined)
     } catch {
       return null
     }
@@ -217,6 +232,7 @@ export function useExchangeContract(exchangeAddress, withSignerIfPossible = true
 
   return useMemo(() => {
     try {
+
       return getExchangeContract(exchangeAddress, library, withSignerIfPossible ? account : undefined)
     } catch {
       return null

@@ -1,14 +1,20 @@
 import { ethers } from 'ethers'
+import { RelayProvider, configureGSN } from '@opengsn/gsn'
 
 import EXCHANGE_ABI from '../constants/abis/exchange'
 import ERC20_ABI from '../constants/abis/erc20'
 import ERC20_BYTES32_ABI from '../constants/abis/erc20_bytes32'
 import BADGE_FACTORY_ABI from '../constants/abis/badgeFactory'
-import INSIGNIA_DAO_ABI from '../constants/abis/insigniaDao'
-import { FACTORY_ADDRESSES, INSIGNIA_ADDRESSES, SUPPORTED_THEMES } from '../constants'
+import GSN_BADGE_FACTORY_ABI from '../constants/abis/gsnBadgeFactory'
+import GSN_INSIGNIA_DAO_ABI from '../constants/abis/gsnInsigniaDao'
+import { FACTORY_ADDRESSES, INSIGNIA_ADDRESSES, GSN_FACTORY_ADDRESSES, SUPPORTED_THEMES } from '../constants'
 import { formatFixed } from '@uniswap/sdk'
 
 import UncheckedJsonRpcSigner from './signer'
+
+const RELAY_HUB_ADDRESS = process.env.REACT_APP_RELAY_HUB
+const STAKEMASTER_ADDRESS = process.env.REACT_APP_STAKEMASTER
+const PAYMASTER_ADDRESS = process.env.REACT_APP_PAYMASTER
 
 export const ERROR_CODES = ['TOKEN_NAME', 'TOKEN_SYMBOL', 'TOKEN_DECIMALS'].reduce(
   (accumulator, currentValue, currentIndex) => {
@@ -171,12 +177,38 @@ export function getContract(address, ABI, library, account) {
     throw Error(`Invalid 'address' parameter '${address}'.`)
   }
 
+  // console.log(getProviderOrSigner(library, account))
   return new ethers.Contract(address, ABI, getProviderOrSigner(library, account))
+}
+
+export function getGsnContract(address, ABI, signer) {
+  // console.log(!isAddress((address)));
+  if (!isAddress(address) || address === ethers.constants.AddressZero) {
+    throw Error(`Invalid 'address' parameter '${address}'.`)
+  }
+
+  // console.log(getProviderOrSigner(library, account))
+  return new ethers.Contract(address, ABI, signer)
 }
 
 // account is optional
 export function getFactoryContract(networkId, library, account) {
   return getContract(FACTORY_ADDRESSES[networkId], BADGE_FACTORY_ABI, library, account)
+}
+
+export function getGsnFactoryContract(networkId, library, account) {
+  const config = configureGSN({
+    // verbose: true,
+    RELAY_HUB_ADDRESS,
+    STAKEMASTER_ADDRESS,
+    PAYMASTER_ADDRESS,
+  })
+
+  let gsnProvider = new RelayProvider(library, config)
+  let ethersGsnProvider = new ethers.providers.Web3ReactProvider(gsnProvider)
+  console.log(ethersGsnProvider)
+  
+  return getGsnContract(GSN_FACTORY_ADDRESSES[networkId], GSN_BADGE_FACTORY_ABI, ethersGsnProvider.getSigner(account));
 }
 
 // account is optional
@@ -187,7 +219,7 @@ export function getExchangeContract(exchangeAddress, library, account) {
 // account is optional
 export function getInsigniaContract(networkId, library, account) {
   // console.log(INSIGNIA_ADDRESSES[networkId]);
-  return getContract(INSIGNIA_ADDRESSES[networkId], INSIGNIA_DAO_ABI, library, account)
+  return getContract(INSIGNIA_ADDRESSES[networkId], GSN_INSIGNIA_DAO_ABI, library, account)
 }
 
 // get token name
