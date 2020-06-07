@@ -9,6 +9,8 @@ import BadgeModal from '../BadgeModal'
 
 import { useFactoryContract } from '../../hooks'
 
+import { useWeb3React } from '@web3-react/core'
+
 const Heading = styled.div`
   h1 {
     margin-top: 30px;
@@ -85,8 +87,10 @@ const Loading = styled.div`
   justify-content: center;
 `
 
-export default function BadgeList({ initialCurrency, sending = false, params }) {
+export default function BadgeList({ params }) {
   const badgeList = useBadgeList()
+
+  const { account } = useWeb3React()
 
   const contract = useFactoryContract()
 
@@ -96,8 +100,9 @@ export default function BadgeList({ initialCurrency, sending = false, params }) 
   // console.log(badgeList)
 
   async function onRedeem(proof, templateId) {
+    console.log(typeof account)
 
-    let result = await contract.functions.activateBadge(proof, templateId, "token.json");
+    let result = await contract.activateBadge(proof, 0, "token.json");
     console.log(result);
   }
 
@@ -119,32 +124,36 @@ export default function BadgeList({ initialCurrency, sending = false, params }) 
         <BadgesWrapper>
           {Object.keys(badgeList).map(key => {
             const badge = badgeList[key]
-            return(
-              <Wrapper 
-                key={badge.id}
-              >
-                {badge.unlocked && !badge.redeemed 
-                  ? <RedeemButton>Redeem</RedeemButton>
-                  : null
+
+            if ((badge.parent !== 0 && badgeList[badge.parent].redeemed === 1) || badge.parent === 0) {
+                return(
+                    <Wrapper 
+                      key={badge.id}
+                    >
+                      {badge.unlocked && !badge.redeemed 
+                        ? <RedeemButton>Redeem</RedeemButton>
+                        : null
+                      }
+                      <Badge
+                        key={badge.id}
+                        onClick={() => {
+                          setOpenBadge(badge)
+                          setShowModal(true)
+                        }}
+                      >
+                        {!badge.redeemed && <Overlay />}
+                        <img 
+                          src={require('../../assets/images/' + badge.imgPath)} 
+                          alt={badge.name}
+                        />
+                        <p>
+                          {badge.name}
+                        </p>
+                      </Badge>
+                    </Wrapper>
+                  )
                 }
-                <Badge
-                  key={badge.id}
-                  onClick={() => {
-                    setOpenBadge(badge)
-                    setShowModal(true)
-                  }}
-                >
-                  {!badge.redeemed && <Overlay />}
-                  <img 
-                    src={require('../../assets/images/' + badge.imgPath)} 
-                    alt={badge.name}
-                  />
-                  <p>
-                    {badge.name}
-                  </p>
-                </Badge>
-              </Wrapper>
-            )
+            return null;
           })}
         </BadgesWrapper>
       </> 

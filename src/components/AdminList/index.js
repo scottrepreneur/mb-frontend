@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { lighten } from 'polished'
 
@@ -41,7 +41,9 @@ const Name = styled.div`
 const Badge = styled.div`
   display: grid;
   grid-template-columns: 50px auto 175px 175px;
-  grid-template-areas: "image name create add";
+  grid-template-rows: auto auto;
+  grid-template-areas: "image name create add"\n"root root root root";
+
   height: 100px;
 `
 
@@ -111,16 +113,21 @@ const Break = styled.hr`
 `
 
 const Root = styled.input`
-  height: 30px;
-  width: 300px;
+  grid-area: root;
+  height: 24px;
+  width: 450px;
+  margin: auto;
+  padding-left: 5px;
+  border-radius: 5px
 `
 
 
 export default function AdminList() {
   const badgeList = useBadgeList()
 
-  const rootHashes = useRootHashes();
-  // console.log(rootHashes);
+  const rootHashes = useRootHashes()
+
+  const [newHashes, setNewHashes] = useState([]);
 
   const [showModal, setShowModal] = useState(false)
 
@@ -128,8 +135,22 @@ export default function AdminList() {
   const badgeFactory = useFactoryContract();
 
   async function onSetRootHashes() {
-    let result = await insignia.setRootHashes(rootHashes);
+    let result = await insignia.setRootHashes(newHashes);
     console.log(result);
+  }
+
+  useEffect(function effectFunction() {
+    setNewHashes(rootHashes)
+  }, [rootHashes]);
+
+  const handleChange = (event) => {
+    setNewHashes(
+      newHashes.map((id, hash) => {
+        if (id === event.target.id) {
+          return event.target.value
+        }
+        return hash
+      }))
   }
 
   async function onCreateTemplate(template) {
@@ -160,8 +181,8 @@ export default function AdminList() {
       {Object.keys(badgeList).map(key => {
         const badge = badgeList[key]
         return(
-          <>
-            <Badge key={badge.id}>
+          <div key={badge.id}>
+            <Badge>
               <Image>
                 <img
                   src={require('../../assets/images/' + badge.imgPath)} 
@@ -178,10 +199,16 @@ export default function AdminList() {
               <AddButton toAdd={true}>
                 <div>+ Add Redeemers</div>
               </AddButton>
-              <Root type="text" defaultValue={rootHashes[badge.id - 1]} />
+              {newHashes.length > 0 &&
+                <Root 
+                  type="text"
+                  id={badge.id}
+                  defaultValue={newHashes[badge.id - 1]}
+                  onChange={handleChange}
+                />}
             </Badge>
             <Break />
-          </>
+          </div>
         )
       })}
     </Wrapper>
