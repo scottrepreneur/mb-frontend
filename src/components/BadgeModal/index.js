@@ -37,6 +37,11 @@ const Name = styled.div`
 
 const Badge = styled.div`
   margin-top: 20px;
+
+  :hover {
+    margin-top: 18px;
+    margin-bottom: 2px;
+  }
 `
 
 const Stage = styled.div`

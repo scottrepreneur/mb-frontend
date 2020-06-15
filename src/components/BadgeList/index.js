@@ -42,12 +42,22 @@ const Badge = styled.div`
   margin: 15px;
   border: 1px solid ${({ theme }) => darken(0.1, theme.backgroundColor)};
   background-color: ${({ theme }) => lighten(0.1, theme.backgroundColor)};
-  box-shadow: 0px 4px 4px ${({ theme }) => darken(0.1, theme.backgroundColor)};
+  box-shadow:  ${({ theme, unlocked }) => unlocked ? '0 0 4px 4px' + lighten(0.3, theme.makerTeal) : '0px 4px 4px' + darken(0.1, theme.backgroundColor)};
   border-radius: 5px;
   position: relative;
 
   :hover {
-      cursor: pointer;
+    cursor: pointer;
+    background: ${({ theme }) => lighten(0.3, theme.backgroundColor)};
+    box-shadow: 0 0 4px 4px ${({ theme }) => lighten(0.3, theme.makerTeal)};
+
+    // & > p {
+    //   color: white;
+    // }
+
+    & > div {
+      display: none;
+    }
   }
 `
 
@@ -97,8 +107,6 @@ export default function BadgeList({ params }) {
   const [openBadge, setOpenBadge] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
-  // console.log(badgeList)
-
   async function onRedeem(proof, templateId) {
     console.log(typeof account)
 
@@ -124,8 +132,8 @@ export default function BadgeList({ params }) {
         <BadgesWrapper>
           {Object.keys(badgeList).map(key => {
             const badge = badgeList[key]
-
-            if ((badge.parent !== 0 && badgeList[badge.parent].redeemed === 1) || badge.parent === 0) {
+            if ((badge.parent !== 0 && badgeList[badge.parent-1]['redeemed'] === 1) || badge.parent === 0) {
+                console.log(badge.id)
                 return(
                     <Wrapper 
                       key={badge.id}
@@ -136,12 +144,13 @@ export default function BadgeList({ params }) {
                       }
                       <Badge
                         key={badge.id}
+                        unlocked={badge.unlocked === 1}
                         onClick={() => {
                           setOpenBadge(badge)
                           setShowModal(true)
                         }}
                       >
-                        {!badge.redeemed && <Overlay />}
+                        {!badge.unlocked && <Overlay />}
                         <img 
                           src={require('../../assets/images/' + badge.imgPath)} 
                           alt={badge.name}
