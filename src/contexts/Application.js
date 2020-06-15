@@ -133,14 +133,41 @@ export function Updater() {
   }, [chainId, library, updateBlockNumber])
 
   useEffect(() => {
+    
     fetchBadgeList(account).then((data) => {
       // console.log(data)
-      if (data) {
-        // console.log(data)
-        updateBadgeList(data);
+      if (data && chainId) {
+        async function getRedeemedBadges() {
+          const factory = getFactoryContract(chainId, library, account)
+          const supply = await factory.totalSupply();
+          let redeemedBadges = [];
+
+          for (let i=0; i < supply; i++ ) {
+            const owner = await factory.ownerOf(i);
+            if (owner === account) {
+              redeemedBadges.push(i)
+            }
+          }
+
+          let redeemedTemplates = [];
+          for (let j=0; j < redeemedBadges.length; j++) {
+            const template = await factory.getBadgeTemplate(j);
+            redeemedTemplates.push(template.toNumber())
+          }
+          for (let k=0; k < redeemedTemplates.length; k++) {
+            data[k]['redeemed'] = 1
+            // REMOVE AFTER TESTING 
+            data[k]['unlocked'] = 1
+          }
+          
+          updateBadgeList(data);
+        }
+        getRedeemedBadges();
       }
     })
-  }, [account, updateBadgeList])
+    
+
+  }, [chainId, library, account, updateBadgeList])
 
   useEffect(() => {
     async function getHashes() {

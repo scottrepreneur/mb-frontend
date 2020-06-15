@@ -100,7 +100,7 @@ function Header({ location: { pathname } }) {
       <HeaderElement>
         <Title>
           <NavLink id="link" to="/redeem">
-            <h1 id="title">MakerDAO Badges</h1>
+            <h1 id="title">Maker Badges</h1>
           </NavLink>
         </Title>
       </HeaderElement>
