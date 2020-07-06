@@ -5,6 +5,7 @@
   "homepage": "https://metabadges.io",
   "private": true,
   "dependencies": {
+    "@babel/helper-call-delegate": "^7.10.1",
     "@reach/dialog": "^0.2.8",
     "@reach/tooltip": "^0.2.0",
     "@types/jest": "^25.1.3",
