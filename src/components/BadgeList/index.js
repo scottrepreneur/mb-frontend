@@ -9,8 +9,6 @@ import BadgeModal from '../BadgeModal'
 
 import { useFactoryContract } from '../../hooks'
 
-import { useWeb3React } from '@web3-react/core'
-
 const Heading = styled.div`
   h1 {
     margin-top: 30px;
@@ -45,6 +43,10 @@ const Badge = styled.div`
   box-shadow:  ${({ theme, unlocked }) => unlocked ? '0 0 4px 4px' + lighten(0.3, theme.makerTeal) : '0px 4px 4px' + darken(0.1, theme.backgroundColor)};
   border-radius: 5px;
   position: relative;
+
+  img {
+    height: 90%;
+  }
 
   :hover {
     cursor: pointer;
@@ -100,17 +102,15 @@ const Loading = styled.div`
 export default function BadgeList({ params }) {
   const badgeList = useBadgeList()
 
-  const { account } = useWeb3React()
-
   const contract = useFactoryContract()
 
   const [openBadge, setOpenBadge] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
   async function onRedeem(proof, templateId) {
-    console.log(typeof account)
+    console.log(proof)
 
-    let result = await contract.activateBadge(proof, 0, "token.json");
+    let result = await contract.activateBadge(proof, templateId-1, "token.json");
     console.log(result);
   }
 
@@ -133,7 +133,7 @@ export default function BadgeList({ params }) {
           {Object.keys(badgeList).map(key => {
             const badge = badgeList[key]
             if ((badge.parent !== 0 && badgeList[badge.parent-1]['redeemed'] === 1) || badge.parent === 0) {
-                console.log(badge.id)
+                // console.log(badge.id)
                 return(
                     <Wrapper 
                       key={badge.id}
@@ -152,7 +152,7 @@ export default function BadgeList({ params }) {
                       >
                         {!badge.unlocked && <Overlay />}
                         <img 
-                          src={require('../../assets/images/' + badge.imgPath)} 
+                          src={require('../../assets/images/badges/' + badge.imgPath)} 
                           alt={badge.name}
                         />
                         <p>

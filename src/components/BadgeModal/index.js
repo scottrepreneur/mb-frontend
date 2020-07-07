@@ -42,6 +42,10 @@ const Badge = styled.div`
     margin-top: 18px;
     margin-bottom: 2px;
   }
+
+  img {
+    height: 150px;
+  }
 `
 
 const Stage = styled.div`
@@ -116,7 +120,7 @@ export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem }) {
           <Name dangerouslySetInnerHTML={{ __html: badge.longName }} />
           <Badge> 
             <img 
-              src={require('../../assets/images/' + badge.imgPath)} 
+              src={require('../../assets/images/badges/' + badge.imgPath)} 
               alt={badge.name} 
             />
           </Badge>

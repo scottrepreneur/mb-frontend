@@ -68,8 +68,12 @@ const Button = styled.button`
   }
 `
 
-export default function BadgeModal({ isOpen, onDismiss, onCreateTemplate }) {
-  const [newBadge, setNewBadge] = useState({});
+export default function BadgeModal({ isOpen, defaultBadge, onDismiss, onCreateTemplate }) {
+  const [newBadge, setNewBadge] = useState({
+    name: defaultBadge.name,
+    description: defaultBadge.description,
+    imgUrl: defaultBadge.imgPath,
+  });
 
   const handleChange = (event) => {
     setNewBadge({
