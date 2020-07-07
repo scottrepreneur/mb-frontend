@@ -149,15 +149,19 @@ export function Updater() {
             }
           }
 
+          console.log(redeemedBadges)
+
           let redeemedTemplates = [];
           for (let j=0; j < redeemedBadges.length; j++) {
-            const template = await factory.getBadgeTemplate(j);
+            const template = await factory.getBadgeTemplate(redeemedBadges[j]);
             redeemedTemplates.push(template.toNumber())
           }
+
+          console.log(redeemedTemplates)
           for (let k=0; k < redeemedTemplates.length; k++) {
-            data[k]['redeemed'] = 1
+            data[redeemedTemplates[k]]['redeemed'] = 1
             // REMOVE AFTER TESTING 
-            data[k]['unlocked'] = 1
+            data[redeemedTemplates[k]]['unlocked'] = 1
           }
           
           updateBadgeList(data);

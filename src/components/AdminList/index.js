@@ -129,12 +129,15 @@ export default function AdminList() {
 
   const [newHashes, setNewHashes] = useState([]);
 
+  const [defaultBadge, setDefaultBadge] = useState({})
+
   const [showModal, setShowModal] = useState(false)
 
   const insignia = useInsigniaContract();
   const badgeFactory = useFactoryContract();
 
   async function onSetRootHashes() {
+    console.log(newHashes);
     let result = await insignia.setRootHashes(newHashes);
     console.log(result);
   }
@@ -144,13 +147,13 @@ export default function AdminList() {
   }, [rootHashes]);
 
   const handleChange = (event) => {
-    setNewHashes(
-      newHashes.map((id, hash) => {
-        if (id === event.target.id) {
-          return event.target.value
-        }
-        return hash
-      }))
+    let updatedHashes = newHashes.map((hash, id) => {
+      if (id === event.target.id - 1) {
+        return event.target.value
+      }
+      return hash
+    })
+    setNewHashes(updatedHashes);
   }
 
   async function onCreateTemplate(template) {
@@ -169,6 +172,7 @@ export default function AdminList() {
     <Wrapper>
       <TemplateModal
         isOpen={showModal}
+        defaultBadge={defaultBadge}
         onCreateTemplate={(template) => onCreateTemplate(template)}
         onDismiss={() => {
           setShowModal(false)
@@ -185,7 +189,7 @@ export default function AdminList() {
             <Badge>
               <Image>
                 <img
-                  src={require('../../assets/images/' + badge.imgPath)} 
+                  src={require('../../assets/images/badges/' + badge.imgPath)} 
                   alt={badge.name}
                 />
               </Image>
@@ -193,7 +197,11 @@ export default function AdminList() {
               <Name>
                 {badge.name}
               </Name>
-              <CreateButton created={false} onClick={() => setShowModal(true)}>
+              <CreateButton created={false} onClick={(badge) => {
+                  setDefaultBadge(badge)
+                  setShowModal(true)
+                }}
+              >
                 <div>Create Badge</div>
               </CreateButton>
               <AddButton toAdd={true}>
