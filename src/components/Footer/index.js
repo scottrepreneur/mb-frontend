@@ -3,9 +3,11 @@ import ReactGA from 'react-ga'
 import styled from 'styled-components'
 import { darken, transparentize } from 'polished'
 import Toggle from 'react-switch'
+import useMedia from 'use-media'
 
 import { Link } from '../../theme'
 import { useDarkModeManager } from '../../contexts/LocalStorage'
+import Web3Status from '../Web3Status'
 
 const FooterFrame = styled.div`
   display: flex;
@@ -74,20 +76,26 @@ const EmojiToggle = styled.span`
 export default function Footer() {
   const [isDark, toggleDarkMode] = useDarkModeManager()
 
+  const isExtraSmall = useMedia({ maxWidth: "970px" })
+
   return (
     <FooterFrame>
       <FooterElement>
-        <Title>
-          <Link id="link" href="https://github.com/naszam/maker-badges">
-            <h1 id="title">Contracts</h1>
-          </Link>
-          <Link id="link" href="https://github.com/scottrepreneur/mb-frontend">
-            <h1 id="title">Frontend</h1>
-          </Link>
-          <Link id="link" href="https://github.com/scottrepreneur/mb-merkle-service">
-            <h1 id="title">Merkle Service</h1>
-          </Link>
-        </Title>
+        {!isExtraSmall ?
+          <Title>
+            <Link id="link" href="https://github.com/naszam/maker-badges">
+              <h1 id="title">Contracts</h1>
+            </Link>
+            <Link id="link" href="https://github.com/scottrepreneur/mb-frontend">
+              <h1 id="title">Frontend</h1>
+            </Link>
+            <Link id="link" href="https://github.com/scottrepreneur/mb-merkle-service">
+              <h1 id="title">Merkle Service</h1>
+            </Link>
+          </Title> 
+          :
+          <Web3Status /> 
+        }
       </FooterElement>
 
       <StyledToggle
