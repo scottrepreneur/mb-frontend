@@ -8,6 +8,7 @@ import Spinner from '../Spinner'
 import BadgeModal from '../BadgeModal'
 
 import { useFactoryContract } from '../../hooks'
+import { useTransactionAdder } from '../../contexts/Transactions'
 
 const Heading = styled.div`
   h1 {
@@ -31,12 +32,11 @@ const Badge = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
   font-size: 13px;
-  width: 9rem;
-  height: 12rem;
-  padding: 15px;
+  width: 11rem;
+  height: 15rem;
+  padding: 10px;
   margin: 15px;
   border: 1px solid ${({ theme }) => darken(0.1, theme.backgroundColor)};
   background-color: ${({ theme }) => lighten(0.1, theme.backgroundColor)};
@@ -44,8 +44,12 @@ const Badge = styled.div`
   border-radius: 5px;
   position: relative;
 
+  p {
+    margin: 0;
+  }
+
   img {
-    height: 90%;
+    height: 85%;
   }
 
   :hover {
@@ -79,8 +83,8 @@ const RedeemButton = styled.button`
   height: 30px;
   z-index: 5;
   position: absolute;
-  top: 120px;
-  left: 45px;
+  top: 8rem;
+  left: 3.5rem;
   border-radius: 5px;
   color: ${({ theme }) => theme.white};
   background-color: ${({ theme }) => theme.makerTeal};
@@ -99,19 +103,23 @@ const Loading = styled.div`
   justify-content: center;
 `
 
-export default function BadgeList({ params }) {
+export default function BadgeList({ params, pendingTransactions, confirmedTransactions }) {
   const badgeList = useBadgeList()
 
   const contract = useFactoryContract()
 
+  const addTransaction = useTransactionAdder()
+
   const [openBadge, setOpenBadge] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  // const [redeemedBadge, setRedeemedBadge] = useState(null)
 
   async function onRedeem(proof, templateId) {
     console.log(proof)
 
     let result = await contract.activateBadge(proof, templateId-1, "token.json");
     console.log(result);
+    addTransaction(result);
   }
 
   return (
@@ -139,7 +147,12 @@ export default function BadgeList({ params }) {
                       key={badge.id}
                     >
                       {badge.unlocked && !badge.redeemed 
-                        ? <RedeemButton>Redeem</RedeemButton>
+                        ?
+                        <RedeemButton 
+                          onClick={() => onRedeem(badge.proof, badge.id)}
+                        >
+                          Redeem
+                        </RedeemButton>
                         : null
                       }
                       <Badge
@@ -155,7 +168,7 @@ export default function BadgeList({ params }) {
                           src={require('../../assets/images/badges/' + badge.imgPath)} 
                           alt={badge.name}
                         />
-                        <p>
+                        <p style={{ fontSize: '16px' }}>
                           {badge.name}
                         </p>
                       </Badge>

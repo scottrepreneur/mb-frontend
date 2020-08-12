@@ -27,7 +27,7 @@ const Closer = styled.img`
 `
 
 const Name = styled.div`
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 1.5rem;
   font-weight: bold;
   width: 80%;
@@ -35,31 +35,26 @@ const Name = styled.div`
   overflow-wrap: balance;
 `
 
-const Badge = styled.div`
-  margin-top: 20px;
-
-  :hover {
-    margin-top: 18px;
-    margin-bottom: 2px;
-  }
-
-  img {
-    height: 150px;
-  }
+const Badge = styled.img`
+  height: 300px;
 `
 
-const Stage = styled.div`
-  margin-top: 5px;
-  background-color: ${({ theme }) => theme.badgeShadow};
-  width 75px;
-  height: 22px;
-  border-radius: 80px / 20px;
-`
+// const Stage = styled.div`
+//   margin-top: 5px;
+//   background-color: ${({ theme }) => theme.badgeShadow};
+//   width 155px;
+//   height: 25px;
+//   border-radius: 115px / 20px;
+// `
 
 const Description = styled.div`
   margin: 20px auto;
-  width: 70%;
+  height: 80%;
+  width: 90%;
   font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 `
 
 const Footer = styled.div`
@@ -118,28 +113,47 @@ export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem }) {
             }} 
           />
           <Name dangerouslySetInnerHTML={{ __html: badge.longName }} />
-          <Badge> 
-            <img 
-              src={require('../../assets/images/badges/' + badge.imgPath)} 
-              alt={badge.name} 
-            />
-          </Badge>
-          <Stage />
-          <Description>
-            {badge.description}
-          </Description>
+          <div style={{ display: 'flex', flexDirection: 'row', height: '350px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '50%' }}>
+              <Badge
+                src={require('../../assets/images/badges/' + badge.imgPath)} 
+                alt={badge.name} /> 
+              {/* <Stage /> */}
+            </div>
+            <div style={{ width: '50%' }}>
+              <Description>
+                <div>
+                  {badge.description}
+                </div>
+                <div>
+                  <b>Steps:</b>
+                  <ol>
+                    {Object.keys(badge.steps).map(step => {
+                      return (
+                        <li 
+                          key={step} 
+                          dangerouslySetInnerHTML={{ __html: badge.steps[step] }} 
+                        />
+                      )
+                    })}
+                  </ol>
+                </div>
+                {badge.note && <div>Note: {badge.note}</div>}
+              </Description>
+            </div>
+          </div>
           <Footer>
             { badge.unlocked && badge.redeemed 
               ? <Status>Redeemed!</Status> 
               : null 
             }
-            { !badge.unlocked && <Status>Progress: 0%</Status> }
+            { !badge.unlocked && <Status>Get Started</Status> }
             <Resource 
               href={badge.resource} 
               target="_blank" 
               rel="noopener noreferrer"
             > 
-              {badge.resource} {'→'} 
+              { !badge.unlocked ? badge.resource + ' →' :  !badge.redeemed ? "Unlocked!" : null }
             </Resource>
             { badge.unlocked && !badge.redeemed 
               ? <Redeem onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</Redeem> 

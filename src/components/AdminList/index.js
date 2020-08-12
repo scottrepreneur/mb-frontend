@@ -5,6 +5,7 @@ import { lighten } from 'polished'
 import { useBadgeList, useRootHashes } from '../../contexts/Application'
 import { useInsigniaContract, useFactoryContract } from '../../hooks'
 import TemplateModal from '../TemplateModal'
+import { useTransactionAdder } from '../../contexts/Transactions'
 
 const Wrapper = styled.div``
 
@@ -136,6 +137,8 @@ export default function AdminList() {
   const insignia = useInsigniaContract();
   const badgeFactory = useFactoryContract();
 
+  const addTransaction = useTransactionAdder();
+
   async function onSetRootHashes() {
     console.log(newHashes);
     let result = await insignia.setRootHashes(newHashes);
@@ -165,6 +168,7 @@ export default function AdminList() {
     )
     
     console.log(result);
+    addTransaction(result)
     return result;
   }
 
