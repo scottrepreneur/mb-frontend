@@ -75,7 +75,7 @@ const theme = darkMode => ({
   malibuBlue: darkMode ? '#E67AEF' : '#5CA2FF',
   royalBlue: darkMode ? '#DC6BE5' : '#2F80ED',
   loadingBlue: darkMode ? '#e4f0ff' : '#e4f0ff',
-  makerBlue: darkMode ? '#08529b' : '#08529b',
+  makerBlue: darkMode ? '#f5b13d' : '#08529b',
 
   // purples
   wisteriaPurple: '#DC6BE5',
@@ -83,7 +83,7 @@ const theme = darkMode => ({
   salmonRed: '#FF6871',
   // orange
   pizazzOrange: '#FF8F05',
-  makerOrange: '#f5b13d',
+  makerOrange: darkMode ? '#f5b13d' : "#08529b",
   // yellows
   warningYellow: '#FFE270',
   // pink

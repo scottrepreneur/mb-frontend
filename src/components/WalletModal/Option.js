@@ -34,7 +34,7 @@ const OptionCardClickable = styled(OptionCard)`
   margin-top: 0;
   &:hover {
     cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
-    border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.malibuBlue}` : ``)};
+    border: ${({ clickable, theme }) => (clickable ? `1px solid ${theme.makerBlue}` : ``)};
   }
   opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `
