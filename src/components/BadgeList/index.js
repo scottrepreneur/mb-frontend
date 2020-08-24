@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
@@ -40,7 +39,8 @@ const Badge = styled.div`
   margin: 15px;
   border: 1px solid ${({ theme }) => darken(0.1, theme.backgroundColor)};
   background-color: ${({ theme }) => lighten(0.1, theme.backgroundColor)};
-  box-shadow:  ${({ theme, unlocked }) => unlocked ? '0 0 4px 4px' + theme.makerOrange : '0px 4px 4px' + darken(0.1, theme.backgroundColor)};
+  box-shadow: ${({ theme, unlocked }) =>
+    unlocked ? '0 0 4px 4px' + theme.makerOrange : '0px 4px 4px' + darken(0.1, theme.backgroundColor)};
   border-radius: 5px;
   position: relative;
 
@@ -117,74 +117,60 @@ export default function BadgeList({ params, pendingTransactions, confirmedTransa
   async function onRedeem(proof, templateId) {
     console.log(proof)
 
-    let result = await contract.activateBadge(proof, templateId-1, "token.json");
-    console.log(result);
-    addTransaction(result);
+    let result = await contract.activateBadge(proof, templateId - 1, 'token.json')
+    console.log(result)
+    addTransaction(result)
   }
 
   return (
     <>
-    { badgeList && badgeList.length > 0 ? (
-      <>
-        <BadgeModal 
-          badge={openBadge}
-          isOpen={showModal}
-          onRedeem={onRedeem}
-          onDismiss={() => {
-            setShowModal(false)
-          }}
-        />
-        <Heading>
+      {badgeList && badgeList.length > 0 ? (
+        <>
+          <BadgeModal
+            badge={openBadge}
+            isOpen={showModal}
+            onRedeem={onRedeem}
+            onDismiss={() => {
+              setShowModal(false)
+            }}
+          />
+          <Heading>
             <h1>My Badges</h1>
-        </Heading>
-        <BadgesWrapper>
-          {Object.keys(badgeList).map(key => {
-            const badge = badgeList[key]
-            if ((badge.parent !== 0 && badgeList[badge.parent-1]['redeemed'] === 1) || badge.parent === 0) {
+          </Heading>
+          <BadgesWrapper>
+            {Object.keys(badgeList).map(key => {
+              const badge = badgeList[key]
+              if ((badge.parent !== 0 && badgeList[badge.parent - 1]['redeemed'] === 1) || badge.parent === 0) {
                 // console.log(badge.id)
-                return(
-                    <Wrapper 
+                return (
+                  <Wrapper key={badge.id}>
+                    {badge.unlocked && !badge.redeemed ? (
+                      <RedeemButton onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</RedeemButton>
+                    ) : null}
+                    <Badge
                       key={badge.id}
+                      unlocked={badge.unlocked === 1}
+                      onClick={() => {
+                        setOpenBadge(badge)
+                        setShowModal(true)
+                      }}
                     >
-                      {badge.unlocked && !badge.redeemed 
-                        ?
-                        <RedeemButton 
-                          onClick={() => onRedeem(badge.proof, badge.id)}
-                        >
-                          Redeem
-                        </RedeemButton>
-                        : null
-                      }
-                      <Badge
-                        key={badge.id}
-                        unlocked={badge.unlocked === 1}
-                        onClick={() => {
-                          setOpenBadge(badge)
-                          setShowModal(true)
-                        }}
-                      >
-                        {!badge.unlocked && <Overlay />}
-                        <img 
-                          src={require('../../assets/images/badges/' + badge.imgPath)} 
-                          alt={badge.name}
-                        />
-                        <p style={{ fontSize: '16px' }}>
-                          {badge.name}
-                        </p>
-                      </Badge>
-                    </Wrapper>
-                  )
-                }
-            return null;
-          })}
-        </BadgesWrapper>
-      </> 
+                      {!badge.unlocked && <Overlay />}
+                      <img src={require('../../assets/images/badges/' + badge.imgPath)} alt={badge.name} />
+                      <p style={{ fontSize: '16px' }}>{badge.name}</p>
+                    </Badge>
+                  </Wrapper>
+                )
+              }
+              return null
+            })}
+          </BadgesWrapper>
+        </>
       ) : (
         <Loading>
           <Spinner />
         </Loading>
-      )   
-    } 
+      )}
     </>
   )
 }
