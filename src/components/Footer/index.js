@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactGA from 'react-ga'
 import styled from 'styled-components'
-import { darken, transparentize } from 'polished'
+import { lighten, darken, transparentize } from 'polished'
 import Toggle from 'react-switch'
 import useMedia from 'use-media'
 
@@ -27,7 +27,7 @@ const FooterElement = styled.div`
 const Title = styled.div`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.footerLink};
+  color: ${({ theme }) => theme.makerOrange};
 
   :hover {
     cursor: pointer;
@@ -41,9 +41,9 @@ const Title = styled.div`
     font-size: 0.825rem;
     margin-right: 12px;
     font-weight: 400;
-    color: ${({ theme }) => theme.footerLink};
+    color: ${({ theme }) => theme.makerOrange};
     :hover {
-      color: ${({ theme }) => darken(0.2, theme.footerLink)};
+      color: ${({ theme }) => lighten(0.2, theme.makerOrange)};
     }
   }
 `

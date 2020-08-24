@@ -283,7 +283,7 @@ export default function WalletModal({ pendingTransactions, confirmedTransactions
           <HeaderRow>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}</HeaderRow>
           <ContentWrapper>
             {error instanceof UnsupportedChainIdError ? (
-              <h5>Please connect to the main Ethereum network.</h5>
+              <h5>Please connect to Kovan network.</h5>
             ) : (
               'Error connecting. Try refreshing the page.'
             )}

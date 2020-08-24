@@ -67,7 +67,7 @@ const Footer = styled.div`
 
 const Resource = styled.a`
   text-decoration: none;
-  color: ${({ theme }) => theme.makerTeal};
+  color: ${({ theme }) => theme.makerOrange};
 
   :hover {
     text-decoration: underline;
@@ -75,7 +75,7 @@ const Resource = styled.a`
 `
 
 const Status = styled.div`
-  color: ${({ theme }) => theme.makerTeal};
+  color: ${({ theme }) => theme.makerOrange};
 `
 
 const Redeem = styled.button`
@@ -89,7 +89,7 @@ const Redeem = styled.button`
 
   :hover {
     cursor: pointer;
-    box-shadow: 1px 2px 2px ${({ theme }) => theme.makerTeal};
+    box-shadow: 1px 2px 2px ${({ theme }) => theme.makerOrange};
   }
 `
 

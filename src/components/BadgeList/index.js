@@ -40,7 +40,7 @@ const Badge = styled.div`
   margin: 15px;
   border: 1px solid ${({ theme }) => darken(0.1, theme.backgroundColor)};
   background-color: ${({ theme }) => lighten(0.1, theme.backgroundColor)};
-  box-shadow:  ${({ theme, unlocked }) => unlocked ? '0 0 4px 4px' + lighten(0.3, theme.makerTeal) : '0px 4px 4px' + darken(0.1, theme.backgroundColor)};
+  box-shadow:  ${({ theme, unlocked }) => unlocked ? '0 0 4px 4px' + theme.makerOrange : '0px 4px 4px' + darken(0.1, theme.backgroundColor)};
   border-radius: 5px;
   position: relative;
 
@@ -55,7 +55,7 @@ const Badge = styled.div`
   :hover {
     cursor: pointer;
     background: ${({ theme }) => lighten(0.3, theme.backgroundColor)};
-    box-shadow: 0 0 4px 4px ${({ theme }) => lighten(0.3, theme.makerTeal)};
+    box-shadow: 0 0 4px 4px ${({ theme }) => theme.makerOrange};
 
     // & > p {
     //   color: white;
@@ -93,7 +93,7 @@ const RedeemButton = styled.button`
 
   :hover {
     cursor: pointer;
-    box-shadow: 1px 2px 2px ${({ theme }) => theme.makerTeal};
+    box-shadow: 1px 2px 2px ${({ theme }) => theme.makerOrange};
   }
 `
 
