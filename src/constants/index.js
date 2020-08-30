@@ -1,15 +1,46 @@
 import { injected, walletconnect, walletlink, fortmatic, portis } from '../connectors'
 
-export const FACTORY_ADDRESSES = {
-  1: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95',
-  42: '0xb2Fde6157Ee76742C719DDbdfDA48c3dCE9D521E',
-  5777: '0x8a56e61b66D93a35fef534e04C1B1Eb690474906'
+import EXCHANGE_ABI from '../constants/abis/exchange'
+import ERC20_ABI from '../constants/abis/erc20'
+import ERC20_BYTES32_ABI from '../constants/abis/erc20_bytes32'
+import BADGE_FACTORY_ABI from '../constants/abis/badgeFactory'
+import BADGE_ADMIN_ABI from '../constants/abis/badgeAdmin'
+import MCD_CHIEF_ABI from '../constants/abis/mcdChief'
+import MCD_POT_ABI from '../constants/abis/mcdPot'
+import MCD_FLIP_ABI from '../constants/abis/mcdFlip'
+
+export const ADDRESSES = {
+  badgeAdmin: {
+    1: '',
+    42: '0x7f1d746Bb965663c284dC484c25F6AD457a6b736'
+  },
+  badgeFactory: {
+    1: '',
+    42: '0xb2Fde6157Ee76742C719DDbdfDA48c3dCE9D521E'
+  },
+  mcdChief: {
+    1: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
+    42: '0xbBFFC76e94B34F72D96D054b31f6424249c1337d'
+  },
+  mcdPot: {
+    1: '0x197E90f9FAD81970bA7976f33CbD77088E5D7cf7',
+    42: '0xEA190DBDC7adF265260ec4dA6e9675Fd4f5A78bb'
+  },
+  mcdFlipEthA: {
+    1: '0xF32836B9E1f47a0515c6Ec431592D5EbC276407f',
+    42: '0x750295A8db0580F32355f97de7918fF538c818F1'
+  }
 }
 
-export const INSIGNIA_ADDRESSES = {
-  1: '',
-  42: '0x7f1d746Bb965663c284dC484c25F6AD457a6b736',
-  5777: '0x15831De58243DF6c630969355D72e043C0be66da'
+export const CONTRACT_ABIS = {
+  exchange: EXCHANGE_ABI,
+  erc20: ERC20_ABI,
+  erc20_bytes32: ERC20_BYTES32_ABI,
+  badgeAdmin: BADGE_ADMIN_ABI,
+  badgeFactory: BADGE_FACTORY_ABI,
+  mcdChief: MCD_CHIEF_ABI,
+  mcdPot: MCD_POT_ABI,
+  mcdFlipEthA: MCD_FLIP_ABI
 }
 
 export const SUPPORTED_THEMES = {
@@ -94,7 +125,7 @@ export const SUPPORTED_WALLETS =
             href: null,
             color: '#4A6C9B',
             mobile: true
-          },
+          }
           // Torus: {
           //   connector: torus,
           //   name: 'Torus',

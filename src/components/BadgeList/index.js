@@ -6,7 +6,7 @@ import { useBadgeList } from '../../contexts/Application'
 import Spinner from '../Spinner'
 import BadgeModal from '../BadgeModal'
 
-import { useFactoryContract } from '../../hooks'
+import { useBadgeFactoryContract } from '../../hooks'
 import { useTransactionAdder } from '../../contexts/Transactions'
 
 const Heading = styled.div`
@@ -106,7 +106,7 @@ const Loading = styled.div`
 export default function BadgeList({ params, pendingTransactions, confirmedTransactions }) {
   const badgeList = useBadgeList()
 
-  const contract = useFactoryContract()
+  const contract = useBadgeFactoryContract()
 
   const addTransaction = useTransactionAdder()
 
