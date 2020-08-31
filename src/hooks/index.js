@@ -8,7 +8,6 @@ import ERC20_ABI from '../constants/abis/erc20'
 import {
   getContract,
   getBadgeFactoryContract,
-  getExchangeContract,
   getBadgeAdminContract,
   getMcdChiefContract,
   getMcdPotContract,
@@ -221,18 +220,6 @@ export function useBadgeFactoryContract(withSignerIfPossible = true) {
   }, [chainId, library, withSignerIfPossible, account])
 }
 
-export function useExchangeContract(exchangeAddress, withSignerIfPossible = true) {
-  const { library, account } = useWeb3React()
-
-  return useMemo(() => {
-    try {
-      return getExchangeContract(exchangeAddress, library, withSignerIfPossible ? account : undefined)
-    } catch {
-      return null
-    }
-  }, [exchangeAddress, library, withSignerIfPossible, account])
-}
-
 export function useBadgeAdminContract(withSignerIfPossible = true) {
   const { chainId, library, account } = useWeb3React()
 
@@ -251,6 +238,30 @@ export function useMcdChiefContract(withSignerIfPossible = true) {
   return useMemo(() => {
     try {
       return getMcdChiefContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
+}
+
+export function useMcdPotContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    try {
+      return getMcdPotContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
+}
+
+export function useMcdFlipEthAContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    try {
+      return getMcdFlipEthAContract(chainId, library, withSignerIfPossible ? account : undefined)
     } catch {
       return null
     }

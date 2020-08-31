@@ -68,24 +68,26 @@ const Button = styled.button`
   }
 `
 
-export default function BadgeModal({ isOpen, defaultBadge, onDismiss, onCreateTemplate }) {
+export default function TemplateModal({ isOpen, defaultBadge, onDismiss, onCreateTemplate }) {
   const [newBadge, setNewBadge] = useState({
-    name: defaultBadge.name,
-    description: defaultBadge.description,
-    imgUrl: defaultBadge.imgPath,
-  });
+    name: '',
+    description: '',
+    imgUrl: ''
+  })
+  // console.log(newBadge)
+  console.log(defaultBadge)
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setNewBadge({
       ...newBadge,
       [event.target.id]: event.target.value
-    });
+    })
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     // alert('A name was submitted: ' + newBadge.name);
-    event.preventDefault();
-    onCreateTemplate(newBadge);
+    event.preventDefault()
+    onCreateTemplate(newBadge)
   }
 
   return (
@@ -96,50 +98,31 @@ export default function BadgeModal({ isOpen, defaultBadge, onDismiss, onCreateTe
       minHeight={null}
       maxHeight={90}
     >
-      
       <Wrapper>
-        <Closer 
-          src={require('../../assets/images/x.svg')} 
-          alt="close modal" 
+        <Closer
+          src={require('../../assets/images/x.svg')}
+          alt="close modal"
           onClick={() => {
             onDismiss()
-          }} />
-        <Heading>
-          Create Badge Template
-        </Heading>
+          }}
+        />
+        <Heading>Create Badge Template</Heading>
 
         <Form id="new-template">
           <div>
-            <label for="name">Name:</label>
-            <input 
-              id="name" 
-              type="text" 
-              value={newBadge.name} 
-              onChange={handleChange}
-              />
+            <label htmlFor="name">Name:</label>
+            <input id="name" type="text" defaultValue={defaultBadge.name} onChange={handleChange} />
           </div>
           <div>
-            <label for="description">Description:</label>
-            <input 
-              id="description" 
-              type="text" 
-              value={newBadge.description} 
-              onChange={handleChange} 
-              />
+            <label htmlFor="description">Description:</label>
+            <input id="description" type="text" defaultValue={defaultBadge.description} onChange={handleChange} />
           </div>
           <div>
-            <label for="imgUrl">Image URL:</label>
-            <input 
-              id="imgUrl" 
-              type="text" 
-              value={newBadge.imgUrl}
-              onChange={handleChange} 
-              />
+            <label htmlFor="imgUrl">Image URL:</label>
+            <input id="imgUrl" type="text" defaultValue={defaultBadge.imgPath} onChange={handleChange} />
           </div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '15px' }}>
-            <Button onClick={handleSubmit}>
-              Create
-            </Button>
+            <Button onClick={handleSubmit}>Create</Button>
           </div>
         </Form>
       </Wrapper>

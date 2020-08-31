@@ -11,12 +11,14 @@ import MCD_FLIP_ABI from '../constants/abis/mcdFlip'
 
 export const ADDRESSES = {
   badgeAdmin: {
+    // v5
     1: '',
-    42: '0x7f1d746Bb965663c284dC484c25F6AD457a6b736'
+    42: '0x9E8286abBfE37A7813e31468e4a586c5aB270cD0'
   },
   badgeFactory: {
+    // v5
     1: '',
-    42: '0xb2Fde6157Ee76742C719DDbdfDA48c3dCE9D521E'
+    42: '0x6C31CbF214422Ac810573BEe5F20c445200068dD'
   },
   mcdChief: {
     1: '0x9eF05f7F6deB616fd37aC3c959a2dDD25A54E4F5',
@@ -30,6 +32,12 @@ export const ADDRESSES = {
     1: '0xF32836B9E1f47a0515c6Ec431592D5EbC276407f',
     42: '0x750295A8db0580F32355f97de7918fF538c818F1'
   }
+}
+
+export const ON_CHAIN_TEMPLATES = {
+  mcdPot: 0,
+  mcdChief: 14,
+  mcdFlipEthA: 29
 }
 
 export const CONTRACT_ABIS = {

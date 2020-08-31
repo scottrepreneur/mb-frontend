@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { lighten, darken } from 'polished'
-import { useBadgeList } from '../../contexts/Application'
 import Spinner from '../Spinner'
 import BadgeModal from '../BadgeModal'
 
-import { useBadgeFactoryContract } from '../../hooks'
+import { useBadgeFactoryContract, useBadgeAdminContract } from '../../hooks'
+import { useBadgeList } from '../../contexts/Application'
 import { useTransactionAdder } from '../../contexts/Transactions'
+import { ON_CHAIN_TEMPLATES } from '../../constants'
 
 const Heading = styled.div`
   h1 {
@@ -103,10 +104,11 @@ const Loading = styled.div`
   justify-content: center;
 `
 
-export default function BadgeList({ params, pendingTransactions, confirmedTransactions }) {
+export default function BadgeList() {
   const badgeList = useBadgeList()
 
-  const contract = useBadgeFactoryContract()
+  const badgeFactory = useBadgeFactoryContract()
+  const badgeAdmin = useBadgeAdminContract()
 
   const addTransaction = useTransactionAdder()
 
@@ -115,11 +117,36 @@ export default function BadgeList({ params, pendingTransactions, confirmedTransa
   // const [redeemedBadge, setRedeemedBadge] = useState(null)
 
   async function onRedeem(proof, templateId) {
-    console.log(proof)
-
-    let result = await contract.activateBadge(proof, templateId - 1, 'token.json')
+    let result = await badgeFactory.activateBadge(proof, templateId - 1, 'token.json').catch(err => {
+      console.log(err)
+    })
     console.log(result)
-    addTransaction(result)
+    if (result) {
+      addTransaction(result)
+    }
+  }
+
+  async function onUnlock(templateId) {
+    let result
+    if (templateId === ON_CHAIN_TEMPLATES['mcdChief']) {
+      result = await badgeAdmin.chiefChallenge(templateId).catch(err => {
+        console.log(err)
+      })
+    }
+    if (templateId === ON_CHAIN_TEMPLATES['mcdPot']) {
+      result = await badgeAdmin.potChallenge(templateId).catch(err => {
+        console.log(err)
+      })
+    }
+    if (templateId === ON_CHAIN_TEMPLATES['mcdFlipEthA']) {
+      result = await badgeAdmin.flipperChallenge(templateId, 'bidId').catch(err => {
+        console.log(err)
+      })
+    }
+    console.log(result)
+    if (result) {
+      addTransaction(result)
+    }
   }
 
   return (
@@ -130,6 +157,7 @@ export default function BadgeList({ params, pendingTransactions, confirmedTransa
             badge={openBadge}
             isOpen={showModal}
             onRedeem={onRedeem}
+            onUnlock={onUnlock}
             onDismiss={() => {
               setShowModal(false)
             }}
@@ -144,8 +172,10 @@ export default function BadgeList({ params, pendingTransactions, confirmedTransa
                 // console.log(badge.id)
                 return (
                   <Wrapper key={badge.id}>
-                    {badge.unlocked && !badge.redeemed ? (
+                    {badge.unlocked && badge.proof && !badge.redeemed ? (
                       <RedeemButton onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</RedeemButton>
+                    ) : badge.unlocked && !badge.proof ? (
+                      <RedeemButton onClick={() => onUnlock(badge.id)}>Unlock!</RedeemButton>
                     ) : null}
                     <Badge
                       key={badge.id}

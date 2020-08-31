@@ -7,7 +7,10 @@ import { useBadgeAdminContract, useBadgeFactoryContract } from '../../hooks'
 import TemplateModal from '../TemplateModal'
 import { useTransactionAdder } from '../../contexts/Transactions'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  width: 90%;
+  margin: 0 auto;
+`
 
 const Heading = styled.div`
   h1 {
@@ -40,10 +43,9 @@ const Name = styled.div`
 
 const Badge = styled.div`
   display: grid;
-  grid-template-columns: 50px auto 175px 175px;
+  grid-template-columns: 50px auto 175px;
   grid-template-rows: auto auto;
-  grid-template-areas: 'image name create add' \n'root root root root';
-
+  grid-template-areas: 'image name create' \n'root root root';
   height: 100px;
 `
 
@@ -79,38 +81,9 @@ const CreateButton = styled.div`
   }
 `
 
-const AddButton = styled.div`
-  grid-area: add;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    width: 140px;
-    height: 25px;
-    border-radius: 5px;
-    color: ${({ theme, toAdd }) => (!toAdd ? theme.inactiveButton : theme.white)};
-    background-color: ${({ theme, toAdd }) => (!toAdd ? 0 : theme.makerTeal)};
-    border: 1px solid ${({ theme, toAdd }) => (!toAdd ? theme.inactiveButton : theme.makerTeal)};
-    font-weight: bold;
-    font-size: 12px;
-
-    :hover {
-      cursor: ${({ created }) => (created ? '' : 'pointer')};
-      box-shadow: ${({ theme, created }) =>
-        created ? theme.inactiveButton : '1px 2px 2px' + lighten(0.2, theme.makerBlue)};
-      border: ${({ theme, created }) => (created ? theme.inactiveButton : '1px solid' + lighten(0.2, theme.makerBlue))};
-    }
-  }
-`
-
 const Break = styled.hr`
   height: 0;
-  width: 80%;
+  width: 95%;
   margin: 0 auto;
   border-top: 1px solid ${({ theme }) => theme.buttonOutlineGrey};
 `
@@ -165,10 +138,14 @@ export default function AdminList() {
 
   async function onCreateTemplate(template) {
     console.log(template)
-    let result = await badgeFactory.createTemplate(template.name, template.description, template.imgUrl)
+    let result = await badgeFactory.createTemplate(template.name, template.description, template.imgUrl).catch(err => {
+      console.log(err)
+    })
 
     console.log(result)
-    addTransaction(result)
+    if (result) {
+      addTransaction(result)
+    }
     return result
   }
 
@@ -198,16 +175,13 @@ export default function AdminList() {
               <Name>{badge.name}</Name>
               <CreateButton
                 created={false}
-                onClick={badge => {
+                onClick={() => {
                   setDefaultBadge(badge)
                   setShowModal(true)
                 }}
               >
                 <div>Create Badge</div>
               </CreateButton>
-              <AddButton toAdd={true}>
-                <div>+ Add Redeemers</div>
-              </AddButton>
               {newHashes.length > 0 && (
                 <Root type="text" id={badge.id} defaultValue={newHashes[badge.id - 1]} onChange={handleChange} />
               )}
