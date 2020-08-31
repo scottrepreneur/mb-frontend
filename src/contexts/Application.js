@@ -173,7 +173,7 @@ export function Updater() {
 
           // on chain chief challenge
           const mcdChiefChallengeTemplate = ON_CHAIN_TEMPLATES['mcdChief']
-          if (data[mcdChiefChallengeTemplate]['unlocked'] !== 1) {
+          if (account && data[mcdChiefChallengeTemplate]['unlocked'] !== 1) {
             let voting = '0x0000000000000000000000000000000000000000000000000000000000000000'
             const mcdChief = getMcdChiefContract(chainId, library, account)
             voting = await mcdChief.votes(account)
@@ -183,7 +183,7 @@ export function Updater() {
 
           // on chain pot challenge
           // const mcdPotChallengeTemplate = ON_CHAIN_TEMPLATES['mcdPot']
-          // if (data[mcdPotChallengeTemplate]['unlocked'] !== 1) {
+          // if (account && data[mcdPotChallengeTemplate]['unlocked'] !== 1) {
           //   const mcdPot = getMcdPotContract(chainId, library, account)
           //   const pieBalance = await mcdPot.pie(account).catch(err => {
           //     console.log(err)
@@ -193,7 +193,7 @@ export function Updater() {
 
           // on chain flipper guy challenge
           // const mcdFlipGuyChallengeTemplate = ON_CHAIN_TEMPLATES['mcdFlip']
-          // if (data[mcdFlipGuyChallengeTemplate]['unlocked'] !== 1) {
+          // if (account && data[mcdFlipGuyChallengeTemplate]['unlocked'] !== 1) {
           //   const mcdFlipEthA = getMcdFlipEthAContract(chainId, library, account)
           //   const flipGuy = await mcdFlipEthA.bids(1001).catch(err => {
           //     console.log(err)
