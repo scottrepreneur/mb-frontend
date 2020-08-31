@@ -1,11 +1,6 @@
 import { ethers } from 'ethers'
 
-import EXCHANGE_ABI from '../constants/abis/exchange'
-import ERC20_ABI from '../constants/abis/erc20'
-import ERC20_BYTES32_ABI from '../constants/abis/erc20_bytes32'
-import BADGE_FACTORY_ABI from '../constants/abis/badgeFactory'
-import INSIGNIA_DAO_ABI from '../constants/abis/insigniaDao'
-import { FACTORY_ADDRESSES, INSIGNIA_ADDRESSES, SUPPORTED_THEMES } from '../constants'
+import { ADDRESSES, CONTRACT_ABIS, SUPPORTED_THEMES } from '../constants'
 import { formatFixed } from '@uniswap/sdk'
 
 import UncheckedJsonRpcSigner from './signer'
@@ -175,75 +170,30 @@ export function getContract(address, ABI, library, account) {
 }
 
 // account is optional
-export function getFactoryContract(networkId, library, account) {
-  return getContract(FACTORY_ADDRESSES[networkId], BADGE_FACTORY_ABI, library, account)
+export function getBadgeFactoryContract(networkId, library, account) {
+  return getContract(ADDRESSES['badgeFactory'][networkId], CONTRACT_ABIS['badgeFactory'], library, account)
 }
 
 // account is optional
 export function getExchangeContract(exchangeAddress, library, account) {
-  return getContract(exchangeAddress, EXCHANGE_ABI, library, account)
+  return getContract(exchangeAddress, CONTRACT_ABIS['exchange'], library, account)
 }
 
 // account is optional
-export function getInsigniaContract(networkId, library, account) {
-  // console.log(INSIGNIA_ADDRESSES[networkId]);
-  return getContract(INSIGNIA_ADDRESSES[networkId], INSIGNIA_DAO_ABI, library, account)
+export function getBadgeAdminContract(networkId, library, account) {
+  return getContract(ADDRESSES['badgeAdmin'][networkId], CONTRACT_ABIS['badgeAdmin'], library, account)
 }
 
-// get token name
-export async function getTokenName(tokenAddress, library) {
-  if (!isAddress(tokenAddress)) {
-    throw Error(`Invalid 'tokenAddress' parameter '${tokenAddress}'.`)
-  }
-
-  return getContract(tokenAddress, ERC20_ABI, library)
-    .name()
-    .catch(() =>
-      getContract(tokenAddress, ERC20_BYTES32_ABI, library)
-        .name()
-        .then(bytes32 => ethers.utils.parseBytes32String(bytes32))
-    )
-    .catch(error => {
-      error.code = ERROR_CODES.TOKEN_SYMBOL
-      throw error
-    })
+export function getMcdChiefContract(networkId, library, account) {
+  return getContract(ADDRESSES['mcdChief'][networkId], CONTRACT_ABIS['mcdChief'], library, account)
 }
 
-// get token symbol
-export async function getTokenSymbol(tokenAddress, library) {
-  if (!isAddress(tokenAddress)) {
-    throw Error(`Invalid 'tokenAddress' parameter '${tokenAddress}'.`)
-  }
-
-  return getContract(tokenAddress, ERC20_ABI, library)
-    .symbol()
-    .catch(() => {
-      const contractBytes32 = getContract(tokenAddress, ERC20_BYTES32_ABI, library)
-      return contractBytes32.symbol().then(bytes32 => ethers.utils.parseBytes32String(bytes32))
-    })
-    .catch(error => {
-      error.code = ERROR_CODES.TOKEN_SYMBOL
-      throw error
-    })
+export function getMcdPotContract(networkId, library, account) {
+  return getContract(ADDRESSES['mcdChief'][networkId], CONTRACT_ABIS['mcdPot'], library, account)
 }
 
-// get token decimals
-export async function getTokenDecimals(tokenAddress, library) {
-  if (!isAddress(tokenAddress)) {
-    throw Error(`Invalid 'tokenAddress' parameter '${tokenAddress}'.`)
-  }
-
-  return getContract(tokenAddress, ERC20_ABI, library)
-    .decimals()
-    .catch(error => {
-      error.code = ERROR_CODES.TOKEN_DECIMALS
-      throw error
-    })
-}
-
-// get the exchange address for a token from the factory
-export async function getTokenExchangeAddressFromFactory(tokenAddress, networkId, library) {
-  return getFactoryContract(networkId, library).getExchange(tokenAddress)
+export function getMcdFlipEthAContract(networkId, library, account) {
+  return getContract(ADDRESSES['mcdChief'][networkId], CONTRACT_ABIS['mcdFlipEthA'], library, account)
 }
 
 // get the ether balance of an address
@@ -278,7 +228,7 @@ export async function getTokenBalance(tokenAddress, address, library) {
     throw Error(`Invalid 'tokenAddress' or 'address' parameter '${tokenAddress}' or '${address}'.`)
   }
 
-  return getContract(tokenAddress, ERC20_ABI, library).balanceOf(address)
+  return getContract(tokenAddress, CONTRACT_ABIS['erc20'], library).balanceOf(address)
 }
 
 // get the token allowance
@@ -290,7 +240,7 @@ export async function getTokenAllowance(address, tokenAddress, spenderAddress, l
     )
   }
 
-  return getContract(tokenAddress, ERC20_ABI, library).allowance(address, spenderAddress)
+  return getContract(tokenAddress, CONTRACT_ABIS['erc20'], library).allowance(address, spenderAddress)
 }
 
 // amount must be a BigNumber, {base,display}Decimals must be Numbers

@@ -39,14 +39,6 @@ const Badge = styled.img`
   height: 300px;
 `
 
-// const Stage = styled.div`
-//   margin-top: 5px;
-//   background-color: ${({ theme }) => theme.badgeShadow};
-//   width 155px;
-//   height: 25px;
-//   border-radius: 115px / 20px;
-// `
-
 const Description = styled.div`
   margin: 20px auto;
   height: 80%;
@@ -93,48 +85,40 @@ const Redeem = styled.button`
   }
 `
 
-export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem }) {
-
+export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem, onUnlock }) {
   return (
-    <Modal
-      style={{ userSelect: 'none' }}
-      isOpen={isOpen}
-      onDismiss={onDismiss}
-      minHeight={null}
-      maxHeight={90}
-    >
-      {badge &&
+    <Modal style={{ userSelect: 'none' }} isOpen={isOpen} onDismiss={onDismiss} minHeight={null} maxHeight={90}>
+      {badge && (
         <Wrapper>
-          <Closer 
-            src={require('../../assets/images/x.svg')} 
-            alt="close modal" 
+          <Closer
+            src={require('../../assets/images/x.svg')}
+            alt="close modal"
             onClick={() => {
               onDismiss()
-            }} 
+            }}
           />
           <Name dangerouslySetInnerHTML={{ __html: badge.longName }} />
           <div style={{ display: 'flex', flexDirection: 'row', height: '350px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '50%' }}>
-              <Badge
-                src={require('../../assets/images/badges/' + badge.imgPath)} 
-                alt={badge.name} /> 
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '50%'
+              }}
+            >
+              <Badge src={require('../../assets/images/badges/' + badge.imgPath)} alt={badge.name} />
               {/* <Stage /> */}
             </div>
             <div style={{ width: '50%' }}>
               <Description>
-                <div>
-                  {badge.description}
-                </div>
+                <div>{badge.description}</div>
                 <div>
                   <b>Steps:</b>
                   <ol>
                     {Object.keys(badge.steps).map(step => {
-                      return (
-                        <li 
-                          key={step} 
-                          dangerouslySetInnerHTML={{ __html: badge.steps[step] }} 
-                        />
-                      )
+                      return <li key={step} dangerouslySetInnerHTML={{ __html: badge.steps[step] }} />
                     })}
                   </ol>
                 </div>
@@ -143,25 +127,21 @@ export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem }) {
             </div>
           </div>
           <Footer>
-            { badge.unlocked && badge.redeemed 
-              ? <Status>Redeemed!</Status> 
-              : null 
-            }
-            { !badge.unlocked && <Status>Get Started</Status> }
-            <Resource 
-              href={badge.resource} 
-              target="_blank" 
-              rel="noopener noreferrer"
-            > 
-              { !badge.unlocked ? badge.resource + ' →' :  !badge.redeemed ? "Unlocked!" : null }
+            {badge.unlocked && badge.redeemed ? <Status>Redeemed!</Status> : null}
+            {!badge.unlocked && <Status>Get Started</Status>}
+            <Resource href={badge.resource} target="_blank" rel="noopener noreferrer">
+              {!badge.unlocked ? badge.resource + ' →' : !badge.redeemed ? 'Unlocked!' : null}
             </Resource>
-            { badge.unlocked && !badge.redeemed 
-              ? <Redeem onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</Redeem> 
-              : null 
-            }
+            {!badge.redeemed &&
+              badge.unlocked &&
+              (badge.proof ? (
+                <Redeem onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</Redeem>
+              ) : (
+                <Redeem onClick={() => onUnlock(badge.id)}>Unlock!</Redeem>
+              ))}
           </Footer>
         </Wrapper>
-      }
+      )}
     </Modal>
   )
 }

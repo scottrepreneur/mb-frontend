@@ -5,7 +5,15 @@ import { isMobile } from 'react-device-detect'
 
 import { NetworkContextName } from '../constants'
 import ERC20_ABI from '../constants/abis/erc20'
-import { getContract, getFactoryContract, getExchangeContract, getInsigniaContract, isAddress } from '../utils'
+import {
+  getContract,
+  getBadgeFactoryContract,
+  getBadgeAdminContract,
+  getMcdChiefContract,
+  getMcdPotContract,
+  getMcdFlipEthAContract,
+  isAddress
+} from '../utils'
 import { injected } from '../connectors'
 
 export function useWeb3React() {
@@ -200,36 +208,60 @@ export function useTokenContract(tokenAddress, withSignerIfPossible = true) {
 }
 
 // returns null on errors
-export function useFactoryContract(withSignerIfPossible = true) {
+export function useBadgeFactoryContract(withSignerIfPossible = true) {
   const { chainId, library, account } = useWeb3React()
 
   return useMemo(() => {
     try {
-      return getFactoryContract(chainId, library, withSignerIfPossible ? account : undefined)
+      return getBadgeFactoryContract(chainId, library, withSignerIfPossible ? account : undefined)
     } catch {
       return null
     }
   }, [chainId, library, withSignerIfPossible, account])
 }
 
-export function useExchangeContract(exchangeAddress, withSignerIfPossible = true) {
-  const { library, account } = useWeb3React()
-
-  return useMemo(() => {
-    try {
-      return getExchangeContract(exchangeAddress, library, withSignerIfPossible ? account : undefined)
-    } catch {
-      return null
-    }
-  }, [exchangeAddress, library, withSignerIfPossible, account])
-}
-
-export function useInsigniaContract(withSignerIfPossible = true) {
+export function useBadgeAdminContract(withSignerIfPossible = true) {
   const { chainId, library, account } = useWeb3React()
 
   return useMemo(() => {
     try {
-      return getInsigniaContract(chainId, library, withSignerIfPossible ? account : undefined)
+      return getBadgeAdminContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
+}
+
+export function useMcdChiefContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    try {
+      return getMcdChiefContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
+}
+
+export function useMcdPotContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    try {
+      return getMcdPotContract(chainId, library, withSignerIfPossible ? account : undefined)
+    } catch {
+      return null
+    }
+  }, [chainId, library, withSignerIfPossible, account])
+}
+
+export function useMcdFlipEthAContract(withSignerIfPossible = true) {
+  const { chainId, library, account } = useWeb3React()
+
+  return useMemo(() => {
+    try {
+      return getMcdFlipEthAContract(chainId, library, withSignerIfPossible ? account : undefined)
     } catch {
       return null
     }

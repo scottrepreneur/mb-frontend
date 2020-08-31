@@ -9,9 +9,6 @@ import { isMobile } from 'react-device-detect'
 import LocalStorageContextProvider, { Updater as LocalStorageContextUpdater } from './contexts/LocalStorage'
 import ApplicationContextProvider, { Updater as ApplicationContextUpdater } from './contexts/Application'
 import TransactionContextProvider, { Updater as TransactionContextUpdater } from './contexts/Transactions'
-import BalancesContextProvider, { Updater as BalancesContextUpdater } from './contexts/Balances'
-import TokensContextProvider from './contexts/Tokens'
-import AllowancesContextProvider from './contexts/Allowances'
 import App from './pages/App'
 import ThemeProvider, { GlobalStyle } from './theme'
 import './i18n'
@@ -39,13 +36,7 @@ function ContextProviders({ children }) {
   return (
     <LocalStorageContextProvider>
       <ApplicationContextProvider>
-        <TransactionContextProvider>
-          <TokensContextProvider>
-            <BalancesContextProvider>
-              <AllowancesContextProvider>{children}</AllowancesContextProvider>
-            </BalancesContextProvider>
-          </TokensContextProvider>
-        </TransactionContextProvider>
+        <TransactionContextProvider>{children}</TransactionContextProvider>
       </ApplicationContextProvider>
     </LocalStorageContextProvider>
   )
@@ -57,7 +48,6 @@ function Updaters() {
       <LocalStorageContextUpdater />
       <ApplicationContextUpdater />
       <TransactionContextUpdater />
-      <BalancesContextUpdater />
     </>
   )
 }

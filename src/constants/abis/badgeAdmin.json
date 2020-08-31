@@ -1,7 +1,21 @@
 [
   {
     "inputs": [
-      
+      {
+        "internalType": "address",
+        "name": "pot_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "chief_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "flipper_",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -16,7 +30,20 @@
         "type": "address"
       }
     ],
-    "name": "DSRChallengeChecked",
+    "name": "DSChiefChecked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "guy",
+        "type": "address"
+      }
+    ],
+    "name": "FlipperChecked",
     "type": "event"
   },
   {
@@ -49,6 +76,44 @@
       }
     ],
     "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "guy",
+        "type": "address"
+      }
+    ],
+    "name": "PotChecked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RoleAdminChanged",
     "type": "event"
   },
   {
@@ -119,9 +184,21 @@
     "type": "fallback"
   },
   {
-    "inputs": [
-      
+    "inputs": [],
+    "name": "ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
     ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
     "name": "DEFAULT_ADMIN_ROLE",
     "outputs": [
       {
@@ -135,9 +212,7 @@
     "constant": true
   },
   {
-    "inputs": [
-      
-    ],
+    "inputs": [],
     "name": "PAUSER_ROLE",
     "outputs": [
       {
@@ -229,9 +304,7 @@
       }
     ],
     "name": "grantRole",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -261,9 +334,7 @@
     "constant": true
   },
   {
-    "inputs": [
-      
-    ],
+    "inputs": [],
     "name": "owner",
     "outputs": [
       {
@@ -277,9 +348,7 @@
     "constant": true
   },
   {
-    "inputs": [
-      
-    ],
+    "inputs": [],
     "name": "paused",
     "outputs": [
       {
@@ -293,13 +362,9 @@
     "constant": true
   },
   {
-    "inputs": [
-      
-    ],
+    "inputs": [],
     "name": "renounceOwnership",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -317,9 +382,7 @@
       }
     ],
     "name": "renounceRole",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -337,9 +400,7 @@
       }
     ],
     "name": "revokeRole",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -372,9 +433,7 @@
       }
     ],
     "name": "transferOwnership",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -399,9 +458,13 @@
   },
   {
     "inputs": [
-      
+      {
+        "internalType": "uint256",
+        "name": "templateId",
+        "type": "uint256"
+      }
     ],
-    "name": "dsrChallenge",
+    "name": "potChallenge",
     "outputs": [
       {
         "internalType": "bool",
@@ -414,6 +477,54 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "templateId",
+        "type": "uint256"
+      }
+    ],
+    "name": "chiefChallenge",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "templateId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bidId",
+        "type": "uint256"
+      }
+    ],
+    "name": "flipperChallenge",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "templateId",
+        "type": "uint256"
+      },
       {
         "internalType": "address",
         "name": "guy",
@@ -433,24 +544,16 @@
     "constant": true
   },
   {
-    "inputs": [
-      
-    ],
+    "inputs": [],
     "name": "pause",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      
-    ],
+    "inputs": [],
     "name": "unpause",
-    "outputs": [
-      
-    ],
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   }

@@ -3,11 +3,14 @@ import styled from 'styled-components'
 import { lighten } from 'polished'
 
 import { useBadgeList, useRootHashes } from '../../contexts/Application'
-import { useInsigniaContract, useFactoryContract } from '../../hooks'
+import { useBadgeAdminContract, useBadgeFactoryContract } from '../../hooks'
 import TemplateModal from '../TemplateModal'
 import { useTransactionAdder } from '../../contexts/Transactions'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+  width: 90%;
+  margin: 0 auto;
+`
 
 const Heading = styled.div`
   h1 {
@@ -16,8 +19,7 @@ const Heading = styled.div`
   }
 `
 
-const RootHashes = styled.button`
-`
+const RootHashes = styled.button``
 
 const Image = styled.div`
   grid-area: image;
@@ -41,10 +43,9 @@ const Name = styled.div`
 
 const Badge = styled.div`
   display: grid;
-  grid-template-columns: 50px auto 175px 175px;
+  grid-template-columns: 50px auto 175px;
   grid-template-rows: auto auto;
-  grid-template-areas: "image name create add"\n"root root root root";
-
+  grid-template-areas: 'image name create' \n'root root root';
   height: 100px;
 `
 
@@ -62,53 +63,27 @@ const CreateButton = styled.div`
     width: 140px;
     height: 25px;
     border-radius: 5px;
-    color: ${({ theme, created }) => created ? theme.inactiveButton : theme.white };
-    background-color: ${({ theme, created }) => created ? 0 : theme.makerTeal };
-    border: 1px solid ${({ theme, created }) => created ? theme.inactiveButton : theme.makerTeal};
+    color: ${({ theme, created }) => (created ? theme.inactiveButton : theme.white)};
+    background-color: ${({ theme, created }) => (created ? 0 : theme.makerTeal)};
+    border: 1px solid ${({ theme, created }) => (created ? theme.inactiveButton : theme.makerTeal)};
     font-weight: bold;
     font-size: 12px;
-      
+
       :hover {
-        cursor: ${({ created }) => created ? '' : 'pointer'};
-        box-shadow: ${({ theme, created }) => created ? theme.inactiveButton : '1px 2px 2px' + lighten(0.2, theme.makerBlue)};
-        border: ${({ theme, created }) => created ? theme.inactiveButton : '1px solid' + lighten(0.2, theme.makerBlue)};
+        cursor: ${({ created }) => (created ? '' : 'pointer')};
+        box-shadow: ${({ theme, created }) =>
+          created ? theme.inactiveButton : '1px 2px 2px' + lighten(0.2, theme.makerBlue)};
+        border: ${({ theme, created }) =>
+          created ? theme.inactiveButton : '1px solid' + lighten(0.2, theme.makerBlue)};
       }
     }
-    
-  }
-`
 
-const AddButton = styled.div`
-  grid-area: add;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    width: 140px;
-    height: 25px;
-    border-radius: 5px;
-    color: ${({ theme, toAdd }) => !toAdd ? theme.inactiveButton : theme.white };
-    background-color: ${({ theme, toAdd }) => !toAdd ? 0 : theme.makerTeal };
-    border: 1px solid ${({ theme, toAdd }) => !toAdd ? theme.inactiveButton : theme.makerTeal};
-    font-weight: bold;
-    font-size: 12px;
-
-    :hover {
-      cursor: ${({ created }) => created ? '' : 'pointer'};
-      box-shadow: ${({ theme, created }) => created ? theme.inactiveButton : '1px 2px 2px' + lighten(0.2, theme.makerBlue)};
-      border: ${({ theme, created }) => created ? theme.inactiveButton : '1px solid' + lighten(0.2, theme.makerBlue)};
-    }
   }
 `
 
 const Break = styled.hr`
   height: 0;
-  width: 80%;
+  width: 95%;
   margin: 0 auto;
   border-top: 1px solid ${({ theme }) => theme.buttonOutlineGrey};
 `
@@ -119,57 +94,63 @@ const Root = styled.input`
   width: 450px;
   margin: auto;
   padding-left: 5px;
-  border-radius: 5px
+  border-radius: 5px;
 `
-
 
 export default function AdminList() {
   const badgeList = useBadgeList()
 
   const rootHashes = useRootHashes()
 
-  const [newHashes, setNewHashes] = useState([]);
+  const [newHashes, setNewHashes] = useState([])
 
   const [defaultBadge, setDefaultBadge] = useState({})
 
   const [showModal, setShowModal] = useState(false)
 
-  const insignia = useInsigniaContract();
-  const badgeFactory = useFactoryContract();
+  const badgeAdmin = useBadgeAdminContract()
+  const badgeFactory = useBadgeFactoryContract()
 
-  const addTransaction = useTransactionAdder();
+  const addTransaction = useTransactionAdder()
 
   async function onSetRootHashes() {
-    console.log(newHashes);
-    let result = await insignia.setRootHashes(newHashes);
-    console.log(result);
+    let result = await badgeAdmin.setRootHashes(newHashes).catch(err => {
+      console.log(err)
+    })
+    if (result) {
+      addTransaction(result)
+    }
   }
 
-  useEffect(function effectFunction() {
-    setNewHashes(rootHashes)
-  }, [rootHashes]);
+  useEffect(
+    function effectFunction() {
+      setNewHashes(rootHashes)
+    },
+    [rootHashes]
+  )
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     let updatedHashes = newHashes.map((hash, id) => {
       if (id === event.target.id - 1) {
         return event.target.value
       }
       return hash
     })
-    setNewHashes(updatedHashes);
+    setNewHashes(updatedHashes)
   }
 
   async function onCreateTemplate(template) {
     console.log(template)
-    let result = await badgeFactory.createTemplate(
-      template.name,
-      template.description,
-      template.imgUrl
-    )
-    
-    console.log(result);
-    addTransaction(result)
-    return result;
+    let result = await badgeFactory.createTemplate(template.name, template.description, template.imgUrl).catch(err => {
+      console.log(err)
+    })
+
+    console.log(result)
+    if (result) {
+      addTransaction(result)
+      setShowModal(false)
+    }
+    return result
   }
 
   return (
@@ -177,47 +158,37 @@ export default function AdminList() {
       <TemplateModal
         isOpen={showModal}
         defaultBadge={defaultBadge}
-        onCreateTemplate={(template) => onCreateTemplate(template)}
+        onCreateTemplate={template => onCreateTemplate(template)}
         onDismiss={() => {
           setShowModal(false)
-        }} 
+        }}
       />
       <Heading>
-          <h1>Admin</h1>
-          <RootHashes onClick={() => onSetRootHashes()}>Set Roots</RootHashes>
+        <h1>Admin</h1>
+        <RootHashes onClick={() => onSetRootHashes()}>Set Roots</RootHashes>
       </Heading>
       {Object.keys(badgeList).map(key => {
         const badge = badgeList[key]
-        return(
+        return (
           <div key={badge.id}>
             <Badge>
               <Image>
-                <img
-                  src={require('../../assets/images/badges/' + badge.imgPath)} 
-                  alt={badge.name}
-                />
+                <img src={require('../../assets/images/badges/' + badge.imgPath)} alt={badge.name} />
               </Image>
-              
-              <Name>
-                {badge.name}
-              </Name>
-              <CreateButton created={false} onClick={(badge) => {
+
+              <Name>{badge.name}</Name>
+              <CreateButton
+                created={false}
+                onClick={() => {
                   setDefaultBadge(badge)
                   setShowModal(true)
                 }}
               >
                 <div>Create Badge</div>
               </CreateButton>
-              <AddButton toAdd={true}>
-                <div>+ Add Redeemers</div>
-              </AddButton>
-              {newHashes.length > 0 &&
-                <Root 
-                  type="text"
-                  id={badge.id}
-                  defaultValue={newHashes[badge.id - 1]}
-                  onChange={handleChange}
-                />}
+              {newHashes.length > 0 && (
+                <Root type="text" id={badge.id} defaultValue={newHashes[badge.id - 1]} onChange={handleChange} />
+              )}
             </Badge>
             <Break />
           </div>

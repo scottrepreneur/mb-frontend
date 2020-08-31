@@ -1,8 +1,16 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback, useEffect } from 'react'
 
 import { useWeb3React } from '../hooks'
-import { safeAccess, getInsigniaContract, getFactoryContract } from '../utils'
+import {
+  safeAccess,
+  getBadgeAdminContract,
+  getBadgeFactoryContract,
+  getMcdChiefContract
+  // getMcdPotContract,
+  // getMcdFlipEthAContract
+} from '../utils'
 import { fetchBadgeList } from '../badges'
+import { ON_CHAIN_TEMPLATES } from '../constants'
 
 const BLOCK_NUMBER = 'BLOCK_NUMBER'
 const USD_PRICE = 'USD_PRICE'
@@ -33,7 +41,6 @@ function reducer(state, { type, payload }) {
         }
       }
     }
-
     case TOGGLE_WALLET_MODAL: {
       return { ...state, [WALLET_MODAL_OPEN]: !state[WALLET_MODAL_OPEN] }
     }
@@ -41,7 +48,7 @@ function reducer(state, { type, payload }) {
       const { badgeList } = payload
       return {
         ...state,
-        [BADGE_LIST]: badgeList,
+        [BADGE_LIST]: badgeList
       }
     }
     case UPDATE_ROOT_HASHES: {
@@ -63,7 +70,7 @@ export default function Provider({ children }) {
     [USD_PRICE]: {},
     [WALLET_MODAL_OPEN]: false,
     [BADGE_LIST]: [],
-    [ROOT_HASHES]: [],
+    [ROOT_HASHES]: []
   })
 
   const updateBlockNumber = useCallback((networkId, blockNumber) => {
@@ -74,23 +81,28 @@ export default function Provider({ children }) {
     dispatch({ type: TOGGLE_WALLET_MODAL })
   }, [])
 
-  const updateBadgeList = useCallback((badgeList) => {
+  const updateBadgeList = useCallback(badgeList => {
     dispatch({ type: UPDATE_BADGE_LIST, payload: { badgeList } })
   }, [])
 
-  const updateRootHashes = useCallback((rootHashes) => {
+  const updateRootHashes = useCallback(rootHashes => {
     dispatch({ type: UPDATE_ROOT_HASHES, payload: { rootHashes } })
   }, [])
 
   return (
     <ApplicationContext.Provider
-      value={useMemo(() => [state, { updateBlockNumber, toggleWalletModal, updateBadgeList, updateRootHashes }], [
-        state,
-        updateBlockNumber,
-        toggleWalletModal,
-        updateBadgeList,
-        updateRootHashes,
-      ])}
+      value={useMemo(
+        () => [
+          state,
+          {
+            updateBlockNumber,
+            toggleWalletModal,
+            updateBadgeList,
+            updateRootHashes
+          }
+        ],
+        [state, updateBlockNumber, toggleWalletModal, updateBadgeList, updateRootHashes]
+      )}
     >
       {children}
     </ApplicationContext.Provider>
@@ -133,78 +145,94 @@ export function Updater() {
   }, [chainId, library, updateBlockNumber])
 
   useEffect(() => {
-    
-    fetchBadgeList(account).then((data) => {
+    fetchBadgeList(account).then(data => {
       // console.log(data)
       if (data && chainId) {
         async function getRedeemedBadges() {
-          const factory = getFactoryContract(chainId, library, account)
-          const supply = await factory.totalSupply();
-          let redeemedBadges = [];
+          const badgeFactory = getBadgeFactoryContract(chainId, library, account)
+          const supply = await badgeFactory.totalSupply()
+          let redeemedBadges = []
 
-          for (let i=0; i < supply; i++ ) {
-            const owner = await factory.ownerOf(i);
+          // get redeemed badges
+          for (let i = 0; i < supply; i++) {
+            const owner = await badgeFactory.ownerOf(i)
             if (owner === account) {
               redeemedBadges.push(i)
             }
           }
 
-          console.log(redeemedBadges)
-
-          let redeemedTemplates = [];
-          for (let j=0; j < redeemedBadges.length; j++) {
-            const template = await factory.getBadgeTemplate(redeemedBadges[j]);
+          // get redeemed template and updated badge list
+          let redeemedTemplates = []
+          for (let j = 0; j < redeemedBadges.length; j++) {
+            const template = await badgeFactory.getBadgeTemplate(redeemedBadges[j])
             redeemedTemplates.push(template.toNumber())
           }
-
-          console.log(redeemedTemplates)
-          for (let k=0; k < redeemedTemplates.length; k++) {
+          for (let k = 0; k < redeemedTemplates.length; k++) {
             data[redeemedTemplates[k]]['redeemed'] = 1
-            // REMOVE AFTER TESTING 
-            data[redeemedTemplates[k]]['unlocked'] = 1
           }
-          
-          updateBadgeList(data);
+
+          // on chain chief challenge
+          const mcdChiefChallengeTemplate = ON_CHAIN_TEMPLATES['mcdChief']
+          if (data[mcdChiefChallengeTemplate]['unlocked'] !== 1) {
+            let voting = '0x0000000000000000000000000000000000000000000000000000000000000000'
+            const mcdChief = getMcdChiefContract(chainId, library, account)
+            voting = await mcdChief.votes(account)
+            data[mcdChiefChallengeTemplate]['unlocked'] =
+              voting !== '0x0000000000000000000000000000000000000000000000000000000000000000' ? 1 : 0
+          }
+
+          // on chain pot challenge
+          // const mcdPotChallengeTemplate = ON_CHAIN_TEMPLATES['mcdPot']
+          // if (data[mcdPotChallengeTemplate]['unlocked'] !== 1) {
+          //   const mcdPot = getMcdPotContract(chainId, library, account)
+          //   const pieBalance = await mcdPot.pie(account).catch(err => {
+          //     console.log(err)
+          //   })
+          //   data[mcdPotChallengeTemplate]['unlocked'] = pieBalance > 1 * 10 ** 18 ? 1 : 0
+          // }
+
+          // on chain flipper guy challenge
+          // const mcdFlipGuyChallengeTemplate = ON_CHAIN_TEMPLATES['mcdFlip']
+          // if (data[mcdFlipGuyChallengeTemplate]['unlocked'] !== 1) {
+          //   const mcdFlipEthA = getMcdFlipEthAContract(chainId, library, account)
+          //   const flipGuy = await mcdFlipEthA.bids(1001).catch(err => {
+          //     console.log(err)
+          //   })
+          //   data[mcdFlipGuyChallengeTemplate]['unlocked'] = flipGuy === account ? 1 : 0
+          // }
+
+          updateBadgeList(data)
         }
-        getRedeemedBadges();
+        getRedeemedBadges()
       }
     })
-    
-
   }, [chainId, library, account, updateBadgeList])
 
   useEffect(() => {
     async function getHashes() {
-      if (chainId) {
-        const insignia = getInsigniaContract(chainId, library, account)
-        const factory = getFactoryContract(chainId, library, account)
-        const templatesCount = await factory.getTemplatesCount();
-        // console.log(templatesCount.toString('utf-8'));
-        let hashes = [];
+      if (chainId && account) {
+        const badgeAdmin = getBadgeAdminContract(chainId, library, account)
+        const badgeFactory = getBadgeFactoryContract(chainId, library, account)
+        const templatesCount = await badgeFactory.getTemplatesCount()
+
+        let hashes = []
         for (let i = 0; i < templatesCount; i++) {
-          // console.log(i)
-          let thing;
+          let thing
           try {
-             thing = await insignia.roots(i);
-          }
-          catch(error) {
-            // console.log(error);
+            thing = await badgeAdmin.roots(i)
+          } catch (error) {
             thing = '0x0000000000000000000000000000000000000000000000000000000000000000'
           }
-          // console.log(thing)
           hashes.push(thing)
         }
-        // console.log(hashes);
 
         if (hashes) {
-          updateRootHashes(hashes);
+          updateRootHashes(hashes)
         }
       }
     }
-    getHashes();
-    
+    getHashes()
   }, [account, library, chainId, updateRootHashes])
-
 
   return null
 }
