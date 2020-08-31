@@ -9,6 +9,7 @@ import { useBadgeFactoryContract, useBadgeAdminContract } from '../../hooks'
 import { useBadgeList } from '../../contexts/Application'
 import { useTransactionAdder } from '../../contexts/Transactions'
 import { ON_CHAIN_TEMPLATES } from '../../constants'
+import { useWeb3React } from '@web3-react/core'
 
 const Heading = styled.div`
   h1 {
@@ -105,6 +106,8 @@ const Loading = styled.div`
 `
 
 export default function BadgeList() {
+  const { account } = useWeb3React()
+
   const badgeList = useBadgeList()
 
   const badgeFactory = useBadgeFactoryContract()
@@ -163,7 +166,7 @@ export default function BadgeList() {
             }}
           />
           <Heading>
-            <h1>My Badges</h1>
+            <h1>{account ? 'My' : 'Available'} Badges</h1>
           </Heading>
           <BadgesWrapper>
             {Object.keys(badgeList).map(key => {
@@ -185,7 +188,7 @@ export default function BadgeList() {
                         setShowModal(true)
                       }}
                     >
-                      {!badge.unlocked && <Overlay />}
+                      {!badge.unlocked && account && <Overlay />}
                       <img src={require('../../assets/images/badges/' + badge.imgPath)} alt={badge.name} />
                       <p style={{ fontSize: '16px' }}>{badge.name}</p>
                     </Badge>

@@ -132,13 +132,13 @@ export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem, onUnloc
             <Resource href={badge.resource} target="_blank" rel="noopener noreferrer">
               {!badge.unlocked ? badge.resource + ' →' : !badge.redeemed ? 'Unlocked!' : null}
             </Resource>
-            {!badge.redeemed &&
-              badge.unlocked &&
-              (badge.proof ? (
+            {!badge.redeemed && badge.unlocked ? (
+              badge.proof ? (
                 <Redeem onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</Redeem>
               ) : (
                 <Redeem onClick={() => onUnlock(badge.id)}>Unlock!</Redeem>
-              ))}
+              )
+            ) : null}
           </Footer>
         </Wrapper>
       )}

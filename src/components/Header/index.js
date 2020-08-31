@@ -4,25 +4,28 @@ import { withRouter, NavLink } from 'react-router-dom'
 
 import Web3Status from '../Web3Status'
 import { darken } from 'polished'
+import { useBadgeAdminStatus } from '../../contexts/Application'
 
 const tabOrder = [
-  {
-    path: '/redeem',
-    textKey: 'My Badges',
-    regex: /\/redeem/
-  },
-  {
-    path: '/faq',
-    textKey: 'FAQ',
-    regex: /\/faq/
-  },
+  // {
+  //   path: '/redeem',
+  //   textKey: 'My Badges',
+  //   regex: /\/redeem/,
+  //   admin: false
+  // },
+  // {
+  //   path: '/faq',
+  //   textKey: 'FAQ',
+  //   regex: /\/faq/,
+  //   admin: false
+  // },
   {
     path: '/admin',
     textKey: 'Admin',
-    regex: /\/admin/
+    regex: /\/admin/,
+    admin: true
   }
 ]
-
 
 const HeaderFrame = styled.div`
   display: flex;
@@ -43,7 +46,7 @@ const HeaderElement = styled.div`
 const Title = styled.div`
   display: flex;
   align-items: center;
-  
+
   :hover {
     cursor: pointer;
   }
@@ -67,9 +70,7 @@ const Title = styled.div`
   }
 `
 
-const Links = styled.div`
-
-`
+const Links = styled.div``
 
 const activeClassName = 'ACTIVE'
 
@@ -93,8 +94,9 @@ const StyledNavLink = styled(NavLink).attrs({
   }
 `
 
-
 function Header({ location: { pathname } }) {
+  const isBadgeAdmin = useBadgeAdminStatus()
+
   return (
     <HeaderFrame>
       <HeaderElement>
@@ -106,11 +108,13 @@ function Header({ location: { pathname } }) {
       </HeaderElement>
       <HeaderElement>
         <Links>
-          {tabOrder.map(({ path, textKey, regex }) => (
-            <StyledNavLink key={path} to={path} isActive={(_, { pathname }) => pathname.match(regex)}>
-              {(textKey)}
-            </StyledNavLink>
-          ))}
+          {tabOrder.map(({ path, textKey, regex, admin }) =>
+            isBadgeAdmin === true || admin !== true ? (
+              <StyledNavLink key={path} to={path} isActive={(_, { pathname }) => pathname.match(regex)}>
+                {textKey}
+              </StyledNavLink>
+            ) : null
+          )}
         </Links>
       </HeaderElement>
       <HeaderElement>
@@ -120,4 +124,4 @@ function Header({ location: { pathname } }) {
   )
 }
 
-export default withRouter(Header);
+export default withRouter(Header)

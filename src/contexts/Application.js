@@ -10,18 +10,20 @@ import {
   // getMcdFlipEthAContract
 } from '../utils'
 import { fetchBadgeList } from '../badges'
-import { ON_CHAIN_TEMPLATES } from '../constants'
+import { ON_CHAIN_TEMPLATES, BADGE_ADMIN_ROLE } from '../constants'
 
 const BLOCK_NUMBER = 'BLOCK_NUMBER'
 const USD_PRICE = 'USD_PRICE'
 const WALLET_MODAL_OPEN = 'WALLET_MODAL_OPEN'
 const BADGE_LIST = 'BADGE_LIST'
 const ROOT_HASHES = 'ROOT_HASHES'
+const BADGE_ADMIN_STATUS = 'BADGE_ADMIN_STATUS'
 
 const UPDATE_BLOCK_NUMBER = 'UPDATE_BLOCK_NUMBER'
 const TOGGLE_WALLET_MODAL = 'TOGGLE_WALLET_MODAL'
 const UPDATE_BADGE_LIST = 'UPDATE_BADGE_LIST'
 const UPDATE_ROOT_HASHES = 'UPDATE_ROOT_HASHES'
+const UPDATE_BADGE_ADMIN_STATUS = 'UPDATE_BADGE_ADMIN_STATUS'
 
 const ApplicationContext = createContext()
 
@@ -58,6 +60,13 @@ function reducer(state, { type, payload }) {
         [ROOT_HASHES]: rootHashes
       }
     }
+    case UPDATE_BADGE_ADMIN_STATUS: {
+      const { badgeAdminStatus } = payload
+      return {
+        ...state,
+        [BADGE_ADMIN_STATUS]: badgeAdminStatus
+      }
+    }
     default: {
       throw Error(`Unexpected action type in ApplicationContext reducer: '${type}'.`)
     }
@@ -70,7 +79,8 @@ export default function Provider({ children }) {
     [USD_PRICE]: {},
     [WALLET_MODAL_OPEN]: false,
     [BADGE_LIST]: [],
-    [ROOT_HASHES]: []
+    [ROOT_HASHES]: [],
+    [BADGE_ADMIN_STATUS]: false
   })
 
   const updateBlockNumber = useCallback((networkId, blockNumber) => {
@@ -89,6 +99,10 @@ export default function Provider({ children }) {
     dispatch({ type: UPDATE_ROOT_HASHES, payload: { rootHashes } })
   }, [])
 
+  const updateBadgeAdminStatus = useCallback(badgeAdminStatus => {
+    dispatch({ type: UPDATE_BADGE_ADMIN_STATUS, payload: { badgeAdminStatus } })
+  }, [])
+
   return (
     <ApplicationContext.Provider
       value={useMemo(
@@ -98,10 +112,11 @@ export default function Provider({ children }) {
             updateBlockNumber,
             toggleWalletModal,
             updateBadgeList,
-            updateRootHashes
+            updateRootHashes,
+            updateBadgeAdminStatus
           }
         ],
-        [state, updateBlockNumber, toggleWalletModal, updateBadgeList, updateRootHashes]
+        [state, updateBlockNumber, toggleWalletModal, updateBadgeList, updateRootHashes, updateBadgeAdminStatus]
       )}
     >
       {children}
@@ -112,7 +127,7 @@ export default function Provider({ children }) {
 export function Updater() {
   const { library, chainId, account } = useWeb3React()
 
-  const [, { updateBlockNumber, updateBadgeList, updateRootHashes }] = useApplicationContext()
+  const [, { updateBlockNumber, updateBadgeList, updateRootHashes, updateBadgeAdminStatus }] = useApplicationContext()
 
   // update block number
   useEffect(() => {
@@ -234,6 +249,23 @@ export function Updater() {
     getHashes()
   }, [account, library, chainId, updateRootHashes])
 
+  useEffect(() => {
+    async function getBadgeAdminStatus() {
+      let isBadgeAdmin = false
+      if (account) {
+        const badgeAdmin = getBadgeAdminContract(chainId, library, account)
+        const badgeAdminRole = await badgeAdmin.ADMIN_ROLE
+        console.log(badgeAdminRole)
+        isBadgeAdmin = await badgeAdmin.hasRole(BADGE_ADMIN_ROLE, account).catch(err => {
+          console.log(err)
+        })
+      }
+
+      updateBadgeAdminStatus(isBadgeAdmin === true)
+    }
+    getBadgeAdminStatus()
+  }, [account, library, chainId, updateBadgeAdminStatus])
+
   return null
 }
 
@@ -267,4 +299,10 @@ export function useRootHashes() {
   const [state] = useApplicationContext()
 
   return state?.[ROOT_HASHES]
+}
+
+export function useBadgeAdminStatus() {
+  const [state] = useApplicationContext()
+
+  return state?.[BADGE_ADMIN_STATUS]
 }

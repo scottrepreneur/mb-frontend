@@ -51,6 +51,8 @@ export const CONTRACT_ABIS = {
   mcdFlipEthA: MCD_FLIP_ABI
 }
 
+export const BADGE_ADMIN_ROLE = '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775'
+
 export const SUPPORTED_THEMES = {
   DARK: 'DARK',
   LIGHT: 'LIGHT'

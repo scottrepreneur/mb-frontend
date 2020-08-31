@@ -7,6 +7,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 
 import { getAllQueryParams } from '../utils'
+import { useBadgeAdminStatus } from '../contexts/Application'
 
 const Redeem = lazy(() => import('./Redeem'))
 const Admin = lazy(() => import('./Admin'))
@@ -47,6 +48,8 @@ const Body = styled.div`
 
 export default function App() {
   const params = getAllQueryParams()
+  const isBadgeAdmin = useBadgeAdminStatus()
+
   return (
     <>
       <Suspense fallback={null}>
@@ -58,22 +61,22 @@ export default function App() {
             <BodyWrapper>
               <Body>
                 <Web3ReactManager>
-                  
                   {/* this Suspense is for route code-splitting */}
                   <Suspense fallback={null}>
                     <Switch>
-                      <Route exact strict path="/redeem" component={() => <Redeem params={params} />} /> 
-                      <Route exact strict path="/admin" component={() => <Admin params={params} />} />              
+                      <Route exact strict path="/redeem" component={() => <Redeem params={params} />} />
+                      {isBadgeAdmin === true && (
+                        <Route exact strict path="/admin" component={() => <Admin params={params} />} />
+                      )}
                       <Redirect to="/redeem" />
                     </Switch>
                   </Suspense>
-                  
                 </Web3ReactManager>
               </Body>
             </BodyWrapper>
-          <FooterWrapper>
-            <Footer />
-          </FooterWrapper>
+            <FooterWrapper>
+              <Footer />
+            </FooterWrapper>
           </HashRouter>
         </AppWrapper>
       </Suspense>
