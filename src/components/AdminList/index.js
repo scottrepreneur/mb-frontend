@@ -114,9 +114,12 @@ export default function AdminList() {
   const addTransaction = useTransactionAdder()
 
   async function onSetRootHashes() {
-    console.log(newHashes)
-    let result = await badgeAdmin.setRootHashes(newHashes)
-    console.log(result)
+    let result = await badgeAdmin.setRootHashes(newHashes).catch(err => {
+      console.log(err)
+    })
+    if (result) {
+      addTransaction(result)
+    }
   }
 
   useEffect(
@@ -145,6 +148,7 @@ export default function AdminList() {
     console.log(result)
     if (result) {
       addTransaction(result)
+      setShowModal(false)
     }
     return result
   }

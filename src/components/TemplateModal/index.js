@@ -64,7 +64,7 @@ const Button = styled.button`
 
   :hover {
     cursor: pointer;
-    box-shadow: 1px 2px 2px ${({ theme }) => theme.makerTeal};
+    box-shadow: 1px 2px 2px ${({ theme }) => theme.makerOrange};
   }
 `
 
@@ -74,8 +74,6 @@ export default function TemplateModal({ isOpen, defaultBadge, onDismiss, onCreat
     description: '',
     imgUrl: ''
   })
-  // console.log(newBadge)
-  console.log(defaultBadge)
 
   const handleChange = event => {
     setNewBadge({
