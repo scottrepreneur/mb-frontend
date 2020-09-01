@@ -171,11 +171,12 @@ export default function BadgeList() {
           <BadgesWrapper>
             {Object.keys(badgeList).map(key => {
               const badge = badgeList[key]
+
               if ((badge.parent !== 0 && badgeList[badge.parent - 1]['redeemed'] === 1) || badge.parent === 0) {
                 // console.log(badge.id)
                 return (
                   <Wrapper key={badge.id}>
-                    {badge.unlocked && badge.proof.length > 1 && !badge.redeemed ? (
+                    {badge.verified || (badge.unlocked && badge.proof.length > 1 && !badge.redeemed) ? (
                       <RedeemButton onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</RedeemButton>
                     ) : badge.unlocked && badge.proof.length === 0 ? (
                       <RedeemButton onClick={() => onUnlock(badge.id - 1)}>Unlock!</RedeemButton>

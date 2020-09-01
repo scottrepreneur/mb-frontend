@@ -160,67 +160,89 @@ export function Updater() {
   }, [chainId, library, updateBlockNumber])
 
   useEffect(() => {
-    fetchBadgeList(account).then(data => {
-      // console.log(data)
-      if (data && chainId) {
-        async function getRedeemedBadges() {
-          const badgeFactory = getBadgeFactoryContract(chainId, library, account)
-          const supply = await badgeFactory.totalSupply()
-          let redeemedBadges = []
+    fetchBadgeList(account)
+      .then(data => {
+        // console.log(data)
+        if (data && chainId) {
+          async function getRedeemedBadges() {
+            const badgeFactory = getBadgeFactoryContract(chainId, library, account)
+            const badgeAdmin = getBadgeAdminContract(chainId, library, account)
+            const supply = await badgeFactory.totalSupply()
+            console.log(parseInt(supply))
+            let redeemedBadges = []
 
-          // get redeemed badges
-          for (let i = 0; i < supply; i++) {
-            const owner = await badgeFactory.ownerOf(i)
-            if (owner === account) {
-              redeemedBadges.push(i)
+            // get redeemed badges
+            for (let i = 0; i < supply; i++) {
+              const owner = await badgeFactory.ownerOf(i)
+              if (owner === account) {
+                redeemedBadges.push(i)
+              }
             }
+
+            // get redeemed template and updated badge list
+            let redeemedTemplates = []
+            for (let j = 0; j < redeemedBadges.length; j++) {
+              const template = await badgeFactory.getBadgeTemplate(redeemedBadges[j])
+              redeemedTemplates.push(template.toNumber())
+            }
+            for (let k = 0; k < redeemedTemplates.length; k++) {
+              data[redeemedTemplates[k]]['redeemed'] = 1
+            }
+
+            // on chain chief challenge
+            const mcdChiefChallengeTemplate = ON_CHAIN_TEMPLATES['mcdChief']
+            if (account && data[mcdChiefChallengeTemplate]['unlocked'] !== 1) {
+              let voting = '0x0000000000000000000000000000000000000000000000000000000000000000'
+              const mcdChief = getMcdChiefContract(chainId, library, account)
+              voting = await mcdChief.votes(account)
+              data[mcdChiefChallengeTemplate]['unlocked'] =
+                voting !== '0x0000000000000000000000000000000000000000000000000000000000000000' ? 1 : 0
+            }
+
+            let verifiedTemplates = []
+            // REPLACE 32 WITH SOME NUMBER OF TEMPLATES VARIABLE
+            for (let k = 0; k < 32; k++) {
+              const verified = await badgeAdmin.verify(k, account)
+              if (verified) {
+                verifiedTemplates.push(k)
+              }
+            }
+
+            if (verifiedTemplates.length > 0) {
+              for (let l = 0; l < verifiedTemplates.length; l++) {
+                console.log(verifiedTemplates[l])
+                data[verifiedTemplates[l]]['verified'] = 1
+              }
+            }
+
+            // on chain pot challenge
+            // const mcdPotChallengeTemplate = ON_CHAIN_TEMPLATES['mcdPot']
+            // if (account && data[mcdPotChallengeTemplate]['unlocked'] !== 1) {
+            //   const mcdPot = getMcdPotContract(chainId, library, account)
+            //   const pieBalance = await mcdPot.pie(account).catch(err => {
+            //     console.log(err)
+            //   })
+            //   data[mcdPotChallengeTemplate]['unlocked'] = pieBalance > 1 * 10 ** 18 ? 1 : 0
+            // }
+
+            // on chain flipper guy challenge
+            // const mcdFlipGuyChallengeTemplate = ON_CHAIN_TEMPLATES['mcdFlip']
+            // if (account && data[mcdFlipGuyChallengeTemplate]['unlocked'] !== 1) {
+            //   const mcdFlipEthA = getMcdFlipEthAContract(chainId, library, account)
+            //   const flipGuy = await mcdFlipEthA.bids(1001).catch(err => {
+            //     console.log(err)
+            //   })
+            //   data[mcdFlipGuyChallengeTemplate]['unlocked'] = flipGuy === account ? 1 : 0
+            // }
+
+            updateBadgeList(data)
           }
-
-          // get redeemed template and updated badge list
-          let redeemedTemplates = []
-          for (let j = 0; j < redeemedBadges.length; j++) {
-            const template = await badgeFactory.getBadgeTemplate(redeemedBadges[j])
-            redeemedTemplates.push(template.toNumber())
-          }
-          for (let k = 0; k < redeemedTemplates.length; k++) {
-            data[redeemedTemplates[k]]['redeemed'] = 1
-          }
-
-          // on chain chief challenge
-          const mcdChiefChallengeTemplate = ON_CHAIN_TEMPLATES['mcdChief']
-          if (account && data[mcdChiefChallengeTemplate]['unlocked'] !== 1) {
-            let voting = '0x0000000000000000000000000000000000000000000000000000000000000000'
-            const mcdChief = getMcdChiefContract(chainId, library, account)
-            voting = await mcdChief.votes(account)
-            data[mcdChiefChallengeTemplate]['unlocked'] =
-              voting !== '0x0000000000000000000000000000000000000000000000000000000000000000' ? 1 : 0
-          }
-
-          // on chain pot challenge
-          // const mcdPotChallengeTemplate = ON_CHAIN_TEMPLATES['mcdPot']
-          // if (account && data[mcdPotChallengeTemplate]['unlocked'] !== 1) {
-          //   const mcdPot = getMcdPotContract(chainId, library, account)
-          //   const pieBalance = await mcdPot.pie(account).catch(err => {
-          //     console.log(err)
-          //   })
-          //   data[mcdPotChallengeTemplate]['unlocked'] = pieBalance > 1 * 10 ** 18 ? 1 : 0
-          // }
-
-          // on chain flipper guy challenge
-          // const mcdFlipGuyChallengeTemplate = ON_CHAIN_TEMPLATES['mcdFlip']
-          // if (account && data[mcdFlipGuyChallengeTemplate]['unlocked'] !== 1) {
-          //   const mcdFlipEthA = getMcdFlipEthAContract(chainId, library, account)
-          //   const flipGuy = await mcdFlipEthA.bids(1001).catch(err => {
-          //     console.log(err)
-          //   })
-          //   data[mcdFlipGuyChallengeTemplate]['unlocked'] = flipGuy === account ? 1 : 0
-          // }
-
-          updateBadgeList(data)
+          getRedeemedBadges()
         }
-        getRedeemedBadges()
-      }
-    })
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }, [chainId, library, account, updateBadgeList])
 
   useEffect(() => {
@@ -254,8 +276,8 @@ export function Updater() {
       let isBadgeAdmin = false
       if (account) {
         const badgeAdmin = getBadgeAdminContract(chainId, library, account)
-        const badgeAdminRole = await badgeAdmin.ADMIN_ROLE
-        console.log(badgeAdminRole)
+        // const badgeAdminRole = await badgeAdmin.ADMIN_ROLE
+        // console.log(badgeAdminRole)
         isBadgeAdmin = await badgeAdmin.hasRole(BADGE_ADMIN_ROLE, account).catch(err => {
           console.log(err)
         })
