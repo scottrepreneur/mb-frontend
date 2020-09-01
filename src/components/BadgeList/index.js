@@ -123,8 +123,7 @@ export default function BadgeList() {
     let result = await badgeFactory.activateBadge(proof, templateId - 1, 'token.json').catch(err => {
       console.log(err)
     })
-    console.log(result)
-    if (result) {
+    if (result && result.hash) {
       addTransaction(result)
     }
   }
@@ -146,8 +145,8 @@ export default function BadgeList() {
         console.log(err)
       })
     }
-    console.log(result)
-    if (result) {
+
+    if (result && result.hash) {
       addTransaction(result)
     }
   }
@@ -173,7 +172,6 @@ export default function BadgeList() {
               const badge = badgeList[key]
 
               if ((badge.parent !== 0 && badgeList[badge.parent - 1]['redeemed'] === 1) || badge.parent === 0) {
-                // console.log(badge.id)
                 return (
                   <Wrapper key={badge.id}>
                     {(badge.verified && !badge.redeemed) ||

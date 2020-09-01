@@ -168,7 +168,6 @@ export function Updater() {
             const badgeFactory = getBadgeFactoryContract(chainId, library, account)
             const badgeAdmin = getBadgeAdminContract(chainId, library, account)
             const supply = await badgeFactory.totalSupply()
-            console.log(parseInt(supply))
             let redeemedBadges = []
 
             // get redeemed badges
@@ -199,19 +198,20 @@ export function Updater() {
                 voting !== '0x0000000000000000000000000000000000000000000000000000000000000000' ? 1 : 0
             }
 
-            let verifiedTemplates = []
-            // REPLACE 32 WITH SOME NUMBER OF TEMPLATES VARIABLE
-            for (let k = 0; k < 32; k++) {
-              const verified = await badgeAdmin.verify(k, account)
-              if (verified) {
-                verifiedTemplates.push(k)
+            if (account) {
+              let verifiedTemplates = []
+              // REPLACE 32 WITH SOME NUMBER OF TEMPLATES VARIABLE
+              for (let k = 0; k < 32; k++) {
+                const verified = await badgeAdmin.verify(k, account)
+                if (verified) {
+                  verifiedTemplates.push(k)
+                }
               }
-            }
 
-            if (verifiedTemplates.length > 0) {
-              for (let l = 0; l < verifiedTemplates.length; l++) {
-                console.log(verifiedTemplates[l])
-                data[verifiedTemplates[l]]['verified'] = 1
+              if (verifiedTemplates.length > 0) {
+                for (let l = 0; l < verifiedTemplates.length; l++) {
+                  data[verifiedTemplates[l]]['verified'] = 1
+                }
               }
             }
 

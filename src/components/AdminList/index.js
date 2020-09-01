@@ -117,7 +117,7 @@ export default function AdminList() {
     let result = await badgeAdmin.setRootHashes(newHashes).catch(err => {
       console.log(err)
     })
-    if (result) {
+    if (result && result.hash) {
       addTransaction(result)
     }
   }
