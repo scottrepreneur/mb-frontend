@@ -176,7 +176,8 @@ export default function BadgeList() {
                 // console.log(badge.id)
                 return (
                   <Wrapper key={badge.id}>
-                    {badge.verified || (badge.unlocked && badge.proof.length > 1 && !badge.redeemed) ? (
+                    {(badge.verified && badge.redeemed === 0) ||
+                    (badge.unlocked && badge.proof.length > 1 && !badge.redeemed) ? (
                       <RedeemButton onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</RedeemButton>
                     ) : badge.unlocked && badge.proof.length === 0 ? (
                       <RedeemButton onClick={() => onUnlock(badge.id - 1)}>Unlock!</RedeemButton>
