@@ -175,10 +175,10 @@ export default function BadgeList() {
                 // console.log(badge.id)
                 return (
                   <Wrapper key={badge.id}>
-                    {badge.unlocked && badge.proof && !badge.redeemed ? (
+                    {badge.unlocked && badge.proof.length > 1 && !badge.redeemed ? (
                       <RedeemButton onClick={() => onRedeem(badge.proof, badge.id)}>Redeem</RedeemButton>
-                    ) : badge.unlocked && !badge.proof ? (
-                      <RedeemButton onClick={() => onUnlock(badge.id)}>Unlock!</RedeemButton>
+                    ) : badge.unlocked && badge.proof.length === 0 ? (
+                      <RedeemButton onClick={() => onUnlock(badge.id - 1)}>Unlock!</RedeemButton>
                     ) : null}
                     <Badge
                       key={badge.id}
