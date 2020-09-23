@@ -44,6 +44,11 @@ const Body = styled.div`
   max-width: 60rem;
   width: 80%;
   /* margin: 0 1.25rem 1.25rem 1.25rem; */
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 90%;
+    max-width: none;
+  `}
 `
 
 export default function App() {

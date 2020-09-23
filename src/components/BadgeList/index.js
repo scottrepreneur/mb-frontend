@@ -15,6 +15,11 @@ const Heading = styled.div`
   h1 {
     margin-top: 30px;
     text-align: center;
+
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+      margin-top: 15px;
+      font-size: 24px;
+    `}
   }
 `
 
@@ -23,6 +28,11 @@ const BadgesWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-direction: column;
+    flex-wrap: none;
+  `}
 `
 
 const Wrapper = styled.div`
@@ -59,14 +69,15 @@ const Badge = styled.div`
     background: ${({ theme }) => lighten(0.3, theme.backgroundColor)};
     box-shadow: 0 0 4px 4px ${({ theme }) => theme.makerOrange};
 
-    // & > p {
-    //   color: white;
-    // }
-
     & > div {
       display: none;
     }
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 85%;
+    height: 375px;
+  `}
 `
 
 const Overlay = styled.div`
@@ -97,12 +108,30 @@ const RedeemButton = styled.button`
     cursor: pointer;
     box-shadow: 1px 2px 2px ${({ theme }) => theme.makerOrange};
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 175px;
+    height: 45px;
+    top: 10rem;
+    left: 5.3rem;
+    border-radius: 10px;
+    font-size: 18px;
+  `}
 `
 
 const Loading = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+`
+
+const BadgeName = styled.p`
+  font-size: 16px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 22px;
+    font-weight: bold;
+  `}
 `
 
 export default function BadgeList() {
@@ -190,7 +219,7 @@ export default function BadgeList() {
                     >
                       {!badge.unlocked && account && <Overlay />}
                       <img src={require('../../assets/images/badges/' + badge.imgPath)} alt={badge.name} />
-                      <p style={{ fontSize: '16px' }}>{badge.name}</p>
+                      <BadgeName>{badge.name}</BadgeName>
                     </Badge>
                   </Wrapper>
                 )

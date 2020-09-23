@@ -22,6 +22,10 @@ const FooterElement = styled.div`
   min-width: 0;
   display: flex;
   align-items: center;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 0.75rem;
+  `}
 `
 
 const Title = styled.div`
@@ -76,12 +80,12 @@ const EmojiToggle = styled.span`
 export default function Footer() {
   const [isDark, toggleDarkMode] = useDarkModeManager()
 
-  const isExtraSmall = useMedia({ maxWidth: "970px" })
+  const isExtraSmall = useMedia({ maxWidth: '970px' })
 
   return (
     <FooterFrame>
       <FooterElement>
-        {!isExtraSmall ?
+        {!isExtraSmall ? (
           <Title>
             <Link id="link" href="https://github.com/naszam/maker-badges">
               <h1 id="title">Contracts</h1>
@@ -92,10 +96,10 @@ export default function Footer() {
             <Link id="link" href="https://github.com/scottrepreneur/mb-merkle-service">
               <h1 id="title">Merkle Service</h1>
             </Link>
-          </Title> 
-          :
-          <Web3Status /> 
-        }
+          </Title>
+        ) : (
+          <Web3Status />
+        )}
       </FooterElement>
 
       <StyledToggle

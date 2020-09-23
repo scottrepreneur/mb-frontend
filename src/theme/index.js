@@ -7,7 +7,7 @@ import { lighten } from 'polished'
 
 export * from './components'
 
-const MEDIA_WIDTHS = {
+export const MEDIA_WIDTHS = {
   upToSmall: 600,
   upToMedium: 960,
   upToLarge: 1280
@@ -83,7 +83,7 @@ const theme = darkMode => ({
   salmonRed: '#FF6871',
   // orange
   pizazzOrange: '#FF8F05',
-  makerOrange: darkMode ? '#f5b13d' : "#08529b",
+  makerOrange: darkMode ? '#f5b13d' : '#08529b',
   // yellows
   warningYellow: '#FFE270',
   // pink
@@ -122,14 +122,14 @@ export const GlobalStyle = createGlobalStyle`
   @supports (font-variation-settings: normal) {
     html { font-family: system-ui, 'Helvetica Neue', sans-serif; }
   }
-  
+
   html,
   body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;    
+    overflow: hidden;
   }
 
   body > div {

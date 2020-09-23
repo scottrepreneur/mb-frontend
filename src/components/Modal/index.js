@@ -66,16 +66,16 @@ const StyledDialogContent = styled(FilteredDialogContent)`
         min-height: ${minHeight}vh;
       `}
     display: flex;
-    overflow: hidden;
+    // overflow: hidden;
     border-radius: 10px;
     ${({ theme }) => theme.mediaWidth.upToMedium`
       width: 65vw;
-      max-height: 65vh;
+      max-height: auto;
       margin: 0;
     `}
     ${({ theme, mobile, isOpen }) => theme.mediaWidth.upToSmall`
-      width:  85vw;
-      max-height: 66vh;
+      width: 96%;
+      max-height: auto;
       ${mobile &&
         css`
           width: 100vw;
@@ -95,7 +95,14 @@ const HiddenCloseButton = styled.button`
   border: none;
 `
 
-export default function Modal({ isOpen, onDismiss, minHeight = false, maxHeight = 50, initialFocusRef, children }) {
+export default function Modal({
+  isOpen,
+  onDismiss,
+  minHeight = false,
+  maxHeight = 80,
+  initialFocusRef = null,
+  children
+}) {
   const transitions = useTransition(isOpen, null, {
     config: { duration: 200 },
     from: { opacity: 0 },
@@ -145,7 +152,9 @@ export default function Modal({ isOpen, onDismiss, minHeight = false, maxHeight 
               {props => (
                 <animated.div
                   {...bind()}
-                  style={{ transform: xy.interpolate((x, y) => `translate3d(${0}px,${y > 0 ? y : 0}px,0)`) }}
+                  style={{
+                    transform: xy.interpolate((x, y) => `translate3d(${0}px,${y > 0 ? y : 0}px,0)`)
+                  }}
                 >
                   <StyledDialogContent
                     style={props}

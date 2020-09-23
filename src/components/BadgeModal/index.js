@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   padding: 15px;
   margin: auto;
   position: relative;
+  padding-bottom: 20px;
 `
 
 const Closer = styled.img`
@@ -33,10 +34,25 @@ const Name = styled.div`
   width: 80%;
   text-align: center;
   overflow-wrap: balance;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 1.25rem;
+  `}
 `
 
 const Badge = styled.img`
   height: 300px;
+`
+
+const MainSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 350px;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-direction: column;
+    height: auto;
+  `}
 `
 
 const Description = styled.div`
@@ -47,6 +63,10 @@ const Description = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin: 5px auto;
+  `}
 `
 
 const Footer = styled.div`
@@ -64,6 +84,10 @@ const Resource = styled.a`
   :hover {
     text-decoration: underline;
   }
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    margin-bottom: 5px;
+  `}
 `
 
 const Status = styled.div`
@@ -85,9 +109,17 @@ const Redeem = styled.button`
   }
 `
 
+const SubSection = styled.div`
+  width: 50%;
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: auto;
+  `}
+`
+
 export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem, onUnlock }) {
   return (
-    <Modal style={{ userSelect: 'none' }} isOpen={isOpen} onDismiss={onDismiss} minHeight={null} maxHeight={90}>
+    <Modal style={{ userSelect: 'none' }} isOpen={isOpen} onDismiss={onDismiss}>
       {badge && (
         <Wrapper>
           <Closer
@@ -98,20 +130,19 @@ export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem, onUnloc
             }}
           />
           <Name dangerouslySetInnerHTML={{ __html: badge.longName }} />
-          <div style={{ display: 'flex', flexDirection: 'row', height: '350px' }}>
-            <div
+          <MainSection>
+            <SubSection
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                width: '50%'
+                justifyContent: 'center'
               }}
             >
               <Badge src={require('../../assets/images/badges/' + badge.imgPath)} alt={badge.name} />
               {/* <Stage /> */}
-            </div>
-            <div style={{ width: '50%' }}>
+            </SubSection>
+            <SubSection>
               <Description>
                 <div>{badge.description}</div>
                 <div>
@@ -124,8 +155,8 @@ export default function BadgeModal({ badge, isOpen, onDismiss, onRedeem, onUnloc
                 </div>
                 {badge.note && <div>Note: {badge.note}</div>}
               </Description>
-            </div>
-          </div>
+            </SubSection>
+          </MainSection>
           <Footer>
             {badge.unlocked && badge.redeemed ? <Status>Redeemed!</Status> : null}
             {!badge.unlocked && <Status>Get Started</Status>}

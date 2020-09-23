@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter, NavLink } from 'react-router-dom'
+import { useMedia } from 'use-media'
+import { darken } from 'polished'
 
 import Web3Status from '../Web3Status'
-import { darken } from 'polished'
 import { useBadgeAdminStatus } from '../../contexts/Application'
+import { MEDIA_WIDTHS } from '../../theme'
 
 const tabOrder = [
   // {
@@ -97,6 +99,8 @@ const StyledNavLink = styled(NavLink).attrs({
 function Header({ location: { pathname } }) {
   const isBadgeAdmin = useBadgeAdminStatus()
 
+  const upToMedium = useMedia({ maxWidth: MEDIA_WIDTHS['upToMedium'].toString() + 'px' })
+
   return (
     <HeaderFrame>
       <HeaderElement>
@@ -106,20 +110,24 @@ function Header({ location: { pathname } }) {
           </NavLink>
         </Title>
       </HeaderElement>
-      <HeaderElement>
-        <Links>
-          {tabOrder.map(({ path, textKey, regex, admin }) =>
-            isBadgeAdmin === true || admin !== true ? (
-              <StyledNavLink key={path} to={path} isActive={(_, { pathname }) => pathname.match(regex)}>
-                {textKey}
-              </StyledNavLink>
-            ) : null
-          )}
-        </Links>
-      </HeaderElement>
-      <HeaderElement>
-        <Web3Status />
-      </HeaderElement>
+      {!upToMedium && (
+        <>
+          <HeaderElement>
+            <Links>
+              {tabOrder.map(({ path, textKey, regex, admin }) =>
+                isBadgeAdmin === true || admin !== true ? (
+                  <StyledNavLink key={path} to={path} isActive={(_, { pathname }) => pathname.match(regex)}>
+                    {textKey}
+                  </StyledNavLink>
+                ) : null
+              )}
+            </Links>
+          </HeaderElement>
+          <HeaderElement>
+            <Web3Status />
+          </HeaderElement>
+        </>
+      )}
     </HeaderFrame>
   )
 }
